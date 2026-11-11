@@ -1,0 +1,35 @@
+# Private environment configuration
+.env
+.env.*
+!.env.example
+
+# Local database configuration
+config.local.php
+config.production.php
+secrets.php
+
+# Database backups and private exports
+backup-*/
+backups/
+*.bak
+*.backup
+*.sql.gz
+
+# Logs and temporary files
+*.log
+logs/
+tmp/
+temp/
+
+# Editor and operating system files
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+
+# Dependencies
+vendor/
+node_modules/
+
+# Old development SQL script
+/sql/optimum_vision.sql
