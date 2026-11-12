@@ -1,9 +1,9 @@
--- phpMyAdmin SQL Dump
+﻿-- phpMyAdmin SQL Dump
 -- version 5.2.1
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Nov 11, 2026 at 02:22 PM
+-- Generation Time: Nov 12, 2026 at 02:53 PM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.1.25
 
@@ -39,6 +39,11 @@ CREATE TABLE `appointments` (
   `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
+--
+-- Dumping data for table `appointments`
+--
+
+
 -- --------------------------------------------------------
 
 --
@@ -53,6 +58,99 @@ CREATE TABLE `appointment_slots` (
   `created_at` timestamp NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
+--
+-- Dumping data for table `appointment_slots`
+--
+
+INSERT INTO `appointment_slots` (`id`, `slot_date`, `slot_time`, `is_available`, `created_at`) VALUES
+(1, '2026-11-09', '09:00:00', 1, '2026-11-08 04:20:56'),
+(2, '2026-11-09', '10:00:00', 1, '2026-11-08 04:20:56'),
+(3, '2026-11-09', '11:00:00', 1, '2026-11-08 04:20:56'),
+(4, '2026-11-09', '13:00:00', 1, '2026-11-08 04:20:56'),
+(5, '2026-11-09', '14:00:00', 1, '2026-11-08 04:20:56'),
+(6, '2026-11-09', '15:00:00', 1, '2026-11-08 04:20:56'),
+(7, '2026-11-09', '16:00:00', 1, '2026-11-08 04:20:56'),
+(8, '2026-11-10', '09:00:00', 1, '2026-11-08 04:20:56'),
+(9, '2026-11-10', '10:00:00', 1, '2026-11-08 04:20:56'),
+(10, '2026-11-10', '11:00:00', 1, '2026-11-08 04:20:56'),
+(11, '2026-11-10', '13:00:00', 1, '2026-11-08 04:20:56'),
+(12, '2026-11-10', '14:00:00', 1, '2026-11-08 04:20:56'),
+(13, '2026-11-10', '15:00:00', 1, '2026-11-08 04:20:56'),
+(14, '2026-11-10', '16:00:00', 1, '2026-11-08 04:20:56'),
+(15, '2026-11-11', '09:00:00', 1, '2026-11-08 04:20:56'),
+(16, '2026-11-11', '10:00:00', 1, '2026-11-08 04:20:56'),
+(17, '2026-11-11', '11:00:00', 1, '2026-11-08 04:20:56'),
+(18, '2026-11-11', '13:00:00', 1, '2026-11-08 04:20:56'),
+(19, '2026-11-15', '16:00:00', 1, '2026-11-08 04:20:56'),
+(20, '2026-11-11', '15:00:00', 1, '2026-11-08 04:20:56'),
+(21, '2026-11-11', '16:00:00', 1, '2026-11-08 04:20:56'),
+(22, '2026-11-12', '09:00:00', 1, '2026-11-08 04:20:56'),
+(23, '2026-11-12', '10:00:00', 1, '2026-11-08 04:20:56'),
+(24, '2026-11-12', '11:00:00', 1, '2026-11-08 04:20:56'),
+(25, '2026-11-12', '13:00:00', 1, '2026-11-08 04:20:56'),
+(26, '2026-11-12', '14:00:00', 1, '2026-11-08 04:20:56'),
+(27, '2026-11-12', '15:00:00', 1, '2026-11-08 04:20:56'),
+(28, '2026-11-12', '16:00:00', 1, '2026-11-08 04:20:56'),
+(29, '2026-11-13', '09:00:00', 1, '2026-11-08 04:20:56'),
+(30, '2026-11-13', '10:00:00', 1, '2026-11-08 04:20:56'),
+(31, '2026-11-13', '11:00:00', 1, '2026-11-08 04:20:56'),
+(32, '2026-11-13', '13:00:00', 1, '2026-11-08 04:20:56'),
+(33, '2026-11-13', '14:00:00', 1, '2026-11-08 04:20:56'),
+(34, '2026-11-13', '15:00:00', 1, '2026-11-08 04:20:56'),
+(35, '2026-11-13', '16:00:00', 1, '2026-11-08 04:20:56'),
+(36, '2026-11-14', '09:00:00', 1, '2026-11-08 04:20:56'),
+(37, '2026-11-14', '10:00:00', 1, '2026-11-08 04:20:56'),
+(38, '2026-11-14', '11:00:00', 1, '2026-11-08 04:20:56'),
+(39, '2026-11-14', '13:00:00', 1, '2026-11-08 04:20:56'),
+(40, '2026-11-14', '14:00:00', 1, '2026-11-08 04:20:56'),
+(41, '2026-11-14', '15:00:00', 1, '2026-11-08 04:20:56'),
+(42, '2026-11-14', '16:00:00', 1, '2026-11-08 04:20:56'),
+(43, '2026-11-16', '09:00:00', 1, '2026-11-08 04:20:56'),
+(44, '2026-11-16', '10:00:00', 1, '2026-11-08 04:20:56'),
+(45, '2026-11-16', '11:00:00', 1, '2026-11-08 04:20:56'),
+(46, '2026-11-16', '13:00:00', 1, '2026-11-08 04:20:56'),
+(47, '2026-11-16', '14:00:00', 1, '2026-11-08 04:20:56'),
+(48, '2026-11-16', '15:00:00', 1, '2026-11-08 04:20:56'),
+(49, '2026-11-16', '16:00:00', 1, '2026-11-08 04:20:56'),
+(50, '2026-11-17', '09:00:00', 1, '2026-11-08 04:20:56'),
+(51, '2026-11-17', '10:00:00', 1, '2026-11-08 04:20:56'),
+(52, '2026-11-17', '11:00:00', 1, '2026-11-08 04:20:56'),
+(53, '2026-11-17', '13:00:00', 1, '2026-11-08 04:20:56'),
+(54, '2026-11-17', '14:00:00', 1, '2026-11-08 04:20:56'),
+(55, '2026-11-17', '15:00:00', 1, '2026-11-08 04:20:56'),
+(56, '2026-11-17', '16:00:00', 1, '2026-11-08 04:20:56'),
+(57, '2026-11-18', '09:00:00', 1, '2026-11-08 04:20:56'),
+(58, '2026-11-18', '10:00:00', 1, '2026-11-08 04:20:56'),
+(59, '2026-11-18', '11:00:00', 1, '2026-11-08 04:20:56'),
+(60, '2026-11-18', '13:00:00', 1, '2026-11-08 04:20:56'),
+(61, '2026-11-18', '14:00:00', 1, '2026-11-08 04:20:56'),
+(62, '2026-11-18', '15:00:00', 1, '2026-11-08 04:20:56'),
+(63, '2026-11-18', '16:00:00', 1, '2026-11-08 04:20:56'),
+(64, '2026-11-19', '09:00:00', 1, '2026-11-08 04:20:56'),
+(65, '2026-11-19', '10:00:00', 1, '2026-11-08 04:20:56'),
+(66, '2026-11-19', '11:00:00', 1, '2026-11-08 04:20:56'),
+(67, '2026-11-19', '13:00:00', 1, '2026-11-08 04:20:56'),
+(68, '2026-11-19', '14:00:00', 1, '2026-11-08 04:20:56'),
+(69, '2026-11-19', '15:00:00', 1, '2026-11-08 04:20:56'),
+(70, '2026-11-19', '16:00:00', 1, '2026-11-08 04:20:56'),
+(71, '2026-11-20', '09:00:00', 1, '2026-11-08 04:20:56'),
+(72, '2026-11-20', '10:00:00', 1, '2026-11-08 04:20:56'),
+(73, '2026-11-20', '11:00:00', 1, '2026-11-08 04:20:56'),
+(74, '2026-11-20', '13:00:00', 1, '2026-11-08 04:20:56'),
+(75, '2026-11-20', '14:00:00', 1, '2026-11-08 04:20:56'),
+(76, '2026-11-20', '15:00:00', 1, '2026-11-08 04:20:56'),
+(77, '2026-11-20', '16:00:00', 1, '2026-11-08 04:20:56'),
+(78, '2026-11-21', '09:00:00', 1, '2026-11-08 04:20:56'),
+(79, '2026-11-21', '10:00:00', 1, '2026-11-08 04:20:56'),
+(80, '2026-11-21', '11:00:00', 1, '2026-11-08 04:20:56'),
+(81, '2026-11-21', '13:00:00', 1, '2026-11-08 04:20:56'),
+(82, '2026-11-21', '14:00:00', 1, '2026-11-08 04:20:56'),
+(83, '2026-11-21', '15:00:00', 1, '2026-11-08 04:20:56'),
+(84, '2026-11-21', '16:00:00', 1, '2026-11-08 04:20:56'),
+(128, '2026-11-20', '17:30:00', 1, '2026-11-08 10:09:41'),
+(130, '2026-11-01', '09:00:00', 1, '2026-11-08 10:38:32'),
+(131, '2026-11-15', '14:30:00', 1, '2026-11-11 05:14:51');
+
 -- --------------------------------------------------------
 
 --
@@ -66,6 +164,11 @@ CREATE TABLE `auth_tokens` (
   `expires_at` datetime NOT NULL,
   `created_at` timestamp NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Dumping data for table `auth_tokens`
+--
+
 
 -- --------------------------------------------------------
 
@@ -108,6 +211,16 @@ CREATE TABLE `inventory` (
   `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
+--
+-- Dumping data for table `inventory`
+--
+
+INSERT INTO `inventory` (`id`, `product_name`, `category`, `brand`, `description`, `sku`, `price`, `stock_quantity`, `low_stock_threshold`, `status`, `created_at`, `updated_at`) VALUES
+(1, 'Classic Black Eyeglass Frame', 'Eyeglass Frames', 'Optimum Vision', 'Updated classic black eyeglass frame', 'OV-FRAME-001', 1750.00, 10, 5, 'Active', '2026-11-09 00:43:02', '2026-11-09 00:58:08'),
+(2, 'Blue Light Eyeglass Frame', 'Eyeglass Frames', 'Optimum Vision', 'Lightweight frame for everyday use', 'OV-FRAME-002', 1250.00, 15, 5, 'Active', '2026-11-11 06:34:47', '2026-11-11 06:40:35'),
+(3, 'Systane Ultra Lubricant Eye Drops 10 mL', 'Eyedrops', 'Systane', 'Lubricating eye drops for temporary relief of dry eye symptoms.', 'OV-EYE-001', 450.00, 20, 5, 'Active', '2026-11-11 07:45:28', '2026-11-12 03:21:08'),
+(4, 'Refresh Tears Lubricant Eye Drops 15 mL', 'Eyedrops', 'Refresh', 'Lubricating eye drops for temporary relief of dry eyes and irritation.', 'OV-EYE-002', 350.00, 20, 5, 'Active', '2026-11-11 07:46:41', '2026-11-11 07:48:17');
+
 -- --------------------------------------------------------
 
 --
@@ -127,6 +240,12 @@ CREATE TABLE `inventory_batches` (
   `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
+--
+-- Dumping data for table `inventory_batches`
+--
+
+
+
 -- --------------------------------------------------------
 
 --
@@ -141,6 +260,12 @@ CREATE TABLE `inventory_expired_records` (
   `expiration_date` date NOT NULL,
   `recorded_at` timestamp NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Dumping data for table `inventory_expired_records`
+--
+
+
 
 -- --------------------------------------------------------
 
@@ -161,6 +286,12 @@ CREATE TABLE `inventory_stock_movements` (
   `created_at` timestamp NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
+--
+-- Dumping data for table `inventory_stock_movements`
+--
+
+
+
 -- --------------------------------------------------------
 
 --
@@ -176,6 +307,11 @@ CREATE TABLE `patients` (
   `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
   `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Dumping data for table `patients`
+--
+
 
 -- --------------------------------------------------------
 
@@ -194,6 +330,12 @@ CREATE TABLE `payments` (
   `notes` varchar(255) DEFAULT NULL,
   `created_at` timestamp NOT NULL DEFAULT current_timestamp()
 ) ;
+
+--
+-- Dumping data for table `payments`
+--
+
+
 
 -- --------------------------------------------------------
 
@@ -239,6 +381,12 @@ CREATE TABLE `sales` (
   `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
+--
+-- Dumping data for table `sales`
+--
+
+
+
 -- --------------------------------------------------------
 
 --
@@ -255,6 +403,12 @@ CREATE TABLE `sale_items` (
   `created_at` timestamp NOT NULL DEFAULT current_timestamp()
 ) ;
 
+--
+-- Dumping data for table `sale_items`
+--
+
+
+
 -- --------------------------------------------------------
 
 --
@@ -268,6 +422,12 @@ CREATE TABLE `sale_item_batch_allocations` (
   `quantity` int(10) UNSIGNED NOT NULL,
   `created_at` timestamp NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Dumping data for table `sale_item_batch_allocations`
+--
+
+
 
 -- --------------------------------------------------------
 
@@ -287,6 +447,11 @@ CREATE TABLE `users` (
   `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
   `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Dumping data for table `users`
+--
+
 
 --
 -- Indexes for dumped tables
@@ -427,19 +592,19 @@ ALTER TABLE `users`
 -- AUTO_INCREMENT for table `appointments`
 --
 ALTER TABLE `appointments`
-  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- AUTO_INCREMENT for table `appointment_slots`
 --
 ALTER TABLE `appointment_slots`
-  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=132;
 
 --
 -- AUTO_INCREMENT for table `auth_tokens`
 --
 ALTER TABLE `auth_tokens`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=44;
 
 --
 -- AUTO_INCREMENT for table `eye_examinations`
@@ -451,31 +616,31 @@ ALTER TABLE `eye_examinations`
 -- AUTO_INCREMENT for table `inventory`
 --
 ALTER TABLE `inventory`
-  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- AUTO_INCREMENT for table `inventory_batches`
 --
 ALTER TABLE `inventory_batches`
-  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
 
 --
 -- AUTO_INCREMENT for table `inventory_expired_records`
 --
 ALTER TABLE `inventory_expired_records`
-  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT for table `inventory_stock_movements`
 --
 ALTER TABLE `inventory_stock_movements`
-  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
 
 --
 -- AUTO_INCREMENT for table `patients`
 --
 ALTER TABLE `patients`
-  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
 
 --
 -- AUTO_INCREMENT for table `payments`
@@ -493,7 +658,7 @@ ALTER TABLE `prescriptions`
 -- AUTO_INCREMENT for table `sales`
 --
 ALTER TABLE `sales`
-  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT for table `sale_items`
@@ -505,13 +670,13 @@ ALTER TABLE `sale_items`
 -- AUTO_INCREMENT for table `sale_item_batch_allocations`
 --
 ALTER TABLE `sale_item_batch_allocations`
-  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT for table `users`
 --
 ALTER TABLE `users`
-  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
 
 --
 -- Constraints for dumped tables
@@ -602,3 +767,5 @@ COMMIT;
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
+
+
