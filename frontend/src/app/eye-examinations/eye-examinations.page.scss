@@ -7,11 +7,42 @@
   --eye-surface: #ffffff;
 }
 
+/* =====================================
+   NAVIGATION BAR — PATIENT DETAILS STYLE
+===================================== */
+
 .eye-toolbar {
-  --background: #ffffff;
-  --color: #17324d;
-  --border-color: #e5edf5;
+  --background: #0b2540;
+  --color: #ffffff;
+  --border-color: #0b2540;
+
+  min-height: 76px;
 }
+
+.eye-toolbar ion-title {
+  color: #ffffff;
+  font-size: 27px;
+  font-weight: 800;
+  padding-inline: 12px;
+}
+
+.eye-toolbar ion-back-button {
+  --background: #0097a7;
+  --color: #ffffff;
+  --border-radius: 50%;
+
+  width: 66px;
+  height: 66px;
+  margin-left: 4px;
+}
+
+.eye-toolbar ion-buttons {
+  margin: 0;
+}
+
+/* =====================================
+   MAIN CONTENT
+===================================== */
 
 .eye-content {
   --background: #f4f7fb;
@@ -64,6 +95,10 @@
   font-weight: 700;
 }
 
+/* =====================================
+   ALERTS
+===================================== */
+
 .alert {
   display: flex;
   align-items: center;
@@ -91,6 +126,10 @@
   border: 1px solid #bbf7d0;
   color: #166534;
 }
+
+/* =====================================
+   SECTION HEADERS
+===================================== */
 
 .section-top {
   display: flex;
@@ -126,6 +165,10 @@ ion-button {
   letter-spacing: 0;
 }
 
+/* =====================================
+   LOADING AND EMPTY STATES
+===================================== */
+
 .loading-state,
 .empty-state {
   background: #ffffff;
@@ -160,6 +203,10 @@ ion-button {
 .empty-state ion-button {
   margin-top: 14px;
 }
+
+/* =====================================
+   EXAMINATION RECORDS
+===================================== */
 
 .exam-list {
   display: grid;
@@ -260,6 +307,10 @@ ion-button {
   padding-top: 16px;
   border-top: 1px solid #e8eef5;
 }
+
+/* =====================================
+   EXAMINATION FORM
+===================================== */
 
 .form-header {
   padding: 26px 28px;
@@ -390,7 +441,25 @@ ion-button {
   display: none;
 }
 
+/* =====================================
+   RESPONSIVE DESIGN
+===================================== */
+
 @media (max-width: 768px) {
+  .eye-toolbar {
+    min-height: 60px;
+  }
+
+  .eye-toolbar ion-title {
+    font-size: 18px;
+    padding-inline: 8px;
+  }
+
+  .eye-toolbar ion-back-button {
+    width: 48px;
+    height: 48px;
+  }
+
   .eye-wrap {
     padding: 20px 14px 50px;
   }
@@ -457,6 +526,10 @@ ion-button {
 
   .record-badge {
     margin-left: 0;
+  }
+
+  .eye-toolbar ion-title {
+    font-size: 16px;
   }
 }
 

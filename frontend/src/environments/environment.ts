@@ -4,7 +4,7 @@
 
 export const environment = {
   production: false,
-  apiBaseUrl: 'http://localhost/optimum-vision-api',
+  apiBaseUrl: 'https://optimum-vision-optical-clinic.onrender.com',
 };
 
 /*

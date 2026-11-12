@@ -1,0 +1,127 @@
+[1mdiff --git a/src/app/core/services/api.service.ts b/src/app/core/services/api.service.ts[m
+[1mindex aa8386f..81d3066 100644[m
+[1m--- a/src/app/core/services/api.service.ts[m
+[1m+++ b/src/app/core/services/api.service.ts[m
+[36m@@ -2,21 +2,30 @@[m
+ import { HttpClient, HttpErrorResponse } from '@angular/common/http';[m
+ import { Injectable, inject } from '@angular/core';[m
+ import { Observable } from 'rxjs';[m
+[32m+[m
+ import { environment } from '../../../environments/environment';[m
+ import { ApiError } from '../models/api.models';[m
+ [m
+ type Params = Record<string, string | number | boolean>;[m
+ [m
+[31m-@Injectable({ providedIn: 'root' })[m
+[32m+[m[32m@Injectable({[m
+[32m+[m[32m  providedIn: 'root',[m
+[32m+[m[32m})[m
+ export class ApiService {[m
+   private readonly http = inject(HttpClient);[m
+ [m
+   private url(resource: string): string {[m
+[31m-    return `${environment.apiBaseUrl}/${resource}.php`;[m
+[32m+[m[32m    const baseUrl = environment.apiBaseUrl.replace(/\/+$/, '');[m
+[32m+[m[32m    return `${baseUrl}/${resource}.php`;[m
+   }[m
+ [m
+[31m-  get<T>(resource: string, params: Params = {}): Observable<T> {[m
+[31m-    return this.http.get<T>(this.url(resource), { params });[m
+[32m+[m[32m  get<T>([m
+[32m+[m[32m    resource: string,[m
+[32m+[m[32m    params: Params = {}[m
+[32m+[m[32m  ): Observable<T> {[m
+[32m+[m[32m    return this.http.get<T>(this.url(resource), {[m
+[32m+[m[32m      params,[m
+[32m+[m[32m    });[m
+   }[m
+ [m
+   post<T>([m
+[36m@@ -24,19 +33,33 @@[m [mexport class ApiService {[m
+     body: unknown,[m
+     params: Params = {}[m
+   ): Observable<T> {[m
+[31m-    return this.http.post<T>(this.url(resource), body, { params });[m
+[32m+[m[32m    return this.http.post<T>([m
+[32m+[m[32m      this.url(resource),[m
+[32m+[m[32m      body,[m
+[32m+[m[32m      { params }[m
+[32m+[m[32m    );[m
+   }[m
+ [m
+   put<T>([m
+[31m-  resource: string,[m
+[31m-  body: unknown,[m
+[31m-  params: Params = {}[m
+[31m-): Observable<T> {[m
+[31m-  return this.http.put<T>(this.url(resource), body, { params });[m
+[31m-}[m
+[32m+[m[32m    resource: string,[m
+[32m+[m[32m    body: unknown,[m
+[32m+[m[32m    params: Params = {}[m
+[32m+[m[32m  ): Observable<T> {[m
+[32m+[m[32m    return this.http.put<T>([m
+[32m+[m[32m      this.url(resource),[m
+[32m+[m[32m      body,[m
+[32m+[m[32m      { params }[m
+[32m+[m[32m    );[m
+[32m+[m[32m  }[m
+ [m
+[31m-  delete<T>(resource: string, params: Params = {}): Observable<T> {[m
+[31m-    return this.http.delete<T>(this.url(resource), { params });[m
+[32m+[m[32m  delete<T>([m
+[32m+[m[32m    resource: string,[m
+[32m+[m[32m    params: Params = {}[m
+[32m+[m[32m  ): Observable<T> {[m
+[32m+[m[32m    return this.http.delete<T>([m
+[32m+[m[32m      this.url(resource),[m
+[32m+[m[32m      { params }[m
+[32m+[m[32m    );[m
+   }[m
+ [m
+   static toApiError(err: unknown): ApiError {[m
+[36m@@ -51,15 +74,21 @@[m [mexport class ApiService {[m
+     if (err.status === 0) {[m
+       return {[m
+         status: 0,[m
+[31m-        message: 'Cannot reach the server. Make sure XAMPP Apache is running.',[m
+[32m+[m[32m        message:[m
+[32m+[m[32m          'Cannot connect to the online server. Please check your internet connection or try again later.',[m
+         fieldErrors: {},[m
+       };[m
+     }[m
+ [m
+[31m-    const body = (err.error ?? {}) as Record<string, unknown>;[m
+[32m+[m[32m    const body =[m
+[32m+[m[32m      err.error && typeof err.error === 'object' && !Array.isArray(err.error)[m
+[32m+[m[32m        ? (err.error as Record<string, unknown>)[m
+[32m+[m[32m        : {};[m
+ [m
+     const fieldErrors =[m
+[31m-      body['errors'] && typeof body['errors'] === 'object'[m
+[32m+[m[32m      body['errors'] &&[m
+[32m+[m[32m      typeof body['errors'] === 'object' &&[m
+[32m+[m[32m      !Array.isArray(body['errors'])[m
+         ? (body['errors'] as Record<string, string>)[m
+         : {};[m
+ [m
+[1mdiff --git a/src/app/patients/patient-details/patient-details.page.html b/src/app/patients/patient-details/patient-details.page.html[m
+[1mindex 1456ef1..8f6ef04 100644[m
+[1m--- a/src/app/patients/patient-details/patient-details.page.html[m
+[1m+++ b/src/app/patients/patient-details/patient-details.page.html[m
+[36m@@ -217,15 +217,6 @@[m
+           View Patient History[m
+         </ion-button>[m
+ [m
+[31m-        <!-- Back to Patient List -->[m
+[31m-        <ion-button[m
+[31m-          expand="block"[m
+[31m-          fill="outline"[m
+[31m-          routerLink="/patients"[m
+[31m-        >[m
+[31m-          Back to Patient List[m
+[31m-        </ion-button>[m
+[31m-[m
+       </div>[m
+ [m
+     }[m
