@@ -8,6 +8,7 @@ require_once __DIR__ . '/helpers.php';
  * Product Inventory API
  *
  * GET  ?action=list
+ * GET  ?action=catalog        (owner, staff, patient - read only)
  * GET  ?action=get&id=1
  * POST ?action=create
  * PUT  ?action=update&id=1
@@ -193,6 +194,91 @@ function inventory_list(
             (int)$product['stock_quantity'];
         $product['low_stock_threshold'] =
             (int)$product['low_stock_threshold'];
+    }
+
+    unset($product);
+
+    respond(200, [
+        'success' => true,
+        'data' => [
+            'products' => $products,
+            'pagination' => [
+                'page' => $page,
+                'limit' => $limit,
+                'total' => $total,
+                'total_pages' => (int)ceil(
+                    $total / $limit
+                )
+            ]
+        ]
+    ]);
+}
+
+// =====================================
+// PATIENT PRODUCT CATALOG (READ-ONLY)
+// Only Active products are returned, and
+// only public fields: no SKU, no exact
+// stock quantity, no threshold.
+// =====================================
+
+function inventory_catalog(PDO $pdo): void
+{
+    [$page, $limit, $offset] = inventory_pagination();
+
+    $conditions = ["status = 'Active'"];
+    $params = [];
+
+    $search = trim((string)($_GET['search'] ?? ''));
+    $category = trim((string)($_GET['category'] ?? ''));
+
+    if ($search !== '') {
+        $conditions[] = '(product_name LIKE ? OR brand LIKE ?)';
+
+        $term = "%$search%";
+
+        array_push($params, $term, $term);
+    }
+
+    if ($category !== '') {
+        $conditions[] = 'category = ?';
+        $params[] = $category;
+    }
+
+    $where = 'WHERE ' . implode(' AND ', $conditions);
+
+    $countStmt = $pdo->prepare("
+        SELECT COUNT(*)
+        FROM inventory
+        $where
+    ");
+
+    $countStmt->execute($params);
+
+    $total = (int)$countStmt->fetchColumn();
+
+    $availability = inventory_availability_sql();
+
+    $stmt = $pdo->prepare("
+        SELECT
+            id,
+            product_name,
+            category,
+            brand,
+            description,
+            price,
+            $availability AS availability
+        FROM inventory
+        $where
+        ORDER BY product_name ASC, id ASC
+        LIMIT $limit OFFSET $offset
+    ");
+
+    $stmt->execute($params);
+
+    $products = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+    foreach ($products as &$product) {
+        $product['id'] = (int)$product['id'];
     }
 
     unset($product);
@@ -410,6 +496,13 @@ try {
             require_http_method(['GET']);
             require_auth($pdo, STAFF_ROLES);
             inventory_list($pdo);
+            break;
+
+        case 'catalog':
+            // Read-only product catalog for patients (and staff).
+            require_http_method(['GET']);
+            require_auth($pdo, ['owner', 'staff', 'patient']);
+            inventory_catalog($pdo);
             break;
 
         case 'get':
