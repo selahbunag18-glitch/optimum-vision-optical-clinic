@@ -7,7 +7,7 @@ RUN docker-php-ext-install pdo_mysql mysqli
 RUN a2enmod rewrite
 
 # Copy PHP backend files
-COPY . /var/www/html/
+COPY --chown=www-data:www-data *.php /var/www/html/
 
 # Set working directory
 WORKDIR /var/www/html
