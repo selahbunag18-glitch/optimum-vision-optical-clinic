@@ -1,0 +1,322 @@
+<ion-header>
+  <ion-toolbar color="primary">
+
+    <ion-buttons slot="start">
+      <ion-button
+        [routerLink]="dashboardRoute()"
+        (click)="blurActiveElement()"
+        class="back-button"
+        aria-label="Back to Dashboard">
+        <ion-icon
+          slot="icon-only"
+          name="arrow-back-outline">
+        </ion-icon>
+      </ion-button>
+    </ion-buttons>
+
+    <ion-title>
+      Inventory Management
+    </ion-title>
+
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+
+  <div class="inventory-container">
+
+    <!-- PAGE HEADER -->
+    <div class="page-header">
+
+      <div>
+        <h1>Optical Products</h1>
+        <p>
+          Manage optical products, prices,
+          and stock availability.
+        </p>
+      </div>
+
+      <!-- ADD PRODUCT BUTTON -->
+      <ion-button
+        routerLink="/inventory/new"
+        (click)="blurActiveElement()">
+        <ion-icon
+          slot="start"
+          name="add-outline">
+        </ion-icon>
+        Add Product
+      </ion-button>
+
+    </div>
+
+    <!-- SUMMARY CARDS -->
+    <div class="summary-grid">
+
+      <ion-card class="summary-card">
+        <ion-card-content>
+
+          <ion-icon name="cube-outline"></ion-icon>
+
+          <h2>{{ totalProducts() }}</h2>
+          <p>Matching Products</p>
+
+        </ion-card-content>
+      </ion-card>
+
+      <ion-card class="summary-card">
+        <ion-card-content>
+
+          <ion-icon
+            name="checkmark-circle-outline">
+          </ion-icon>
+
+          <h2>Inventory</h2>
+          <p>Product Catalog</p>
+
+        </ion-card-content>
+      </ion-card>
+
+    </div>
+
+    <!-- FILTERS -->
+    <ion-card class="filter-card">
+      <ion-card-content>
+
+        <div class="filters">
+
+          <!-- SEARCH -->
+          <ion-input
+            label="Search Products"
+            labelPlacement="stacked"
+            fill="outline"
+            placeholder="Search name, brand, or SKU"
+            [value]="searchTerm()"
+            (ionInput)="onSearchChange($event)">
+          </ion-input>
+
+          <!-- CATEGORY FILTER -->
+          <ion-select
+            label="Category"
+            labelPlacement="stacked"
+            fill="outline"
+            interface="popover"
+            [value]="selectedCategory()"
+            (ionChange)="onCategoryChange($event)">
+
+            <ion-select-option value="">
+              All Categories
+            </ion-select-option>
+
+            <ion-select-option
+              *ngFor="let category of categories"
+              [value]="category">
+
+              {{ category }}
+
+            </ion-select-option>
+
+          </ion-select>
+
+          <!-- STATUS FILTER -->
+          <ion-select
+            label="Status"
+            labelPlacement="stacked"
+            fill="outline"
+            interface="popover"
+            [value]="selectedStatus()"
+            (ionChange)="onStatusChange($event)">
+
+            <ion-select-option value="">
+              All Status
+            </ion-select-option>
+
+            <ion-select-option value="Active">
+              Active
+            </ion-select-option>
+
+            <ion-select-option value="Inactive">
+              Inactive
+            </ion-select-option>
+
+          </ion-select>
+
+        </div>
+
+      </ion-card-content>
+    </ion-card>
+
+    <!-- LOADING -->
+    <div
+      class="loading-state"
+      *ngIf="loading()">
+
+      <ion-spinner name="crescent"></ion-spinner>
+
+      <p>Loading inventory...</p>
+
+    </div>
+
+    <!-- ERROR MESSAGE -->
+    <div
+      class="error-state"
+      *ngIf="errorMessage()">
+
+      <ion-icon name="warning-outline"></ion-icon>
+
+      <p>{{ errorMessage() }}</p>
+
+      <ion-button
+        fill="outline"
+        (click)="refresh()">
+
+        Try Again
+
+      </ion-button>
+
+    </div>
+
+    <!-- PRODUCT LIST -->
+    <div
+      class="product-grid"
+      *ngIf="!loading() && !errorMessage()">
+
+      <ion-card
+        class="product-card"
+        *ngFor="let product of products()">
+
+        <ion-card-content>
+
+          <!-- PRODUCT HEADER -->
+          <div class="product-header">
+
+            <div>
+              <h2>{{ product.product_name }}</h2>
+              <p>{{ product.brand || 'No Brand' }}</p>
+            </div>
+
+            <ion-chip
+              [color]="getStockColor(product)">
+
+              <ion-label>
+                {{ product.availability }}
+              </ion-label>
+
+            </ion-chip>
+
+          </div>
+
+          <!-- PRODUCT INFORMATION -->
+          <div class="product-details">
+
+            <p>
+              <strong>Category:</strong>
+              {{ product.category }}
+            </p>
+
+            <p>
+              <strong>SKU:</strong>
+              {{ product.sku || 'N/A' }}
+            </p>
+
+            <p>
+              <strong>Stock:</strong>
+              {{ getStockQuantity(product) }}
+            </p>
+
+            <p>
+              <strong>Status:</strong>
+              {{ product.status || 'N/A' }}
+            </p>
+
+          </div>
+
+          <!-- PRODUCT PRICE AND ACTIONS -->
+          <div class="product-footer">
+
+            <h3>
+              {{ formatPrice(product.price) }}
+            </h3>
+
+            <!-- EDIT PRODUCT BUTTON -->
+            <ion-button
+              size="small"
+              fill="outline"
+              [routerLink]="[
+                '/inventory',
+                product.id,
+                'edit'
+              ]"
+              (click)="blurActiveElement()">
+
+              <ion-icon
+                slot="start"
+                name="create-outline">
+              </ion-icon>
+
+              Edit Product
+
+            </ion-button>
+
+          </div>
+
+        </ion-card-content>
+      </ion-card>
+
+    </div>
+
+    <!-- EMPTY STATE -->
+    <div
+      class="empty-state"
+      *ngIf="
+        !loading() &&
+        !errorMessage() &&
+        products().length === 0
+      ">
+
+      <ion-icon name="cube-outline"></ion-icon>
+
+      <h2>No Products Found</h2>
+
+      <p>
+        No inventory products match your filters.
+      </p>
+
+    </div>
+
+    <!-- PAGINATION -->
+    <div
+      class="pagination"
+      *ngIf="
+        !loading() &&
+        !errorMessage() &&
+        totalPages() > 1
+      ">
+
+      <ion-button
+        fill="outline"
+        [disabled]="currentPage() <= 1 || loading()"
+        (click)="previousPage()">
+
+        Previous
+
+      </ion-button>
+
+      <span>
+        Page {{ currentPage() }}
+        of {{ totalPages() }}
+      </span>
+
+      <ion-button
+        fill="outline"
+        [disabled]="currentPage() >= totalPages() || loading()"
+        (click)="nextPage()">
+
+        Next
+
+      </ion-button>
+
+    </div>
+
+  </div>
+
+</ion-content>

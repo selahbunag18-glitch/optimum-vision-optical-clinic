@@ -1,0 +1,447 @@
+<ion-header class="ion-no-border">
+  <ion-toolbar class="app-toolbar">
+
+    <ion-buttons slot="start">
+      <ion-button
+        class="back-btn"
+        routerLink="/home"
+        routerDirection="back"
+        aria-label="Back to dashboard"
+      >
+        <ion-icon
+          slot="icon-only"
+          name="arrow-back-outline"
+        ></ion-icon>
+      </ion-button>
+    </ion-buttons>
+
+    <ion-title>Appointment Management</ion-title>
+
+
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-refresher
+    slot="fixed"
+    (ionRefresh)="refreshAppointments($event)"
+  >
+    <ion-refresher-content></ion-refresher-content>
+  </ion-refresher>
+
+  <div class="page-container">
+
+    <!-- Page Heading -->
+    <div class="page-heading">
+      <div class="heading-icon">
+        <ion-icon name="calendar-outline"></ion-icon>
+      </div>
+
+      <div>
+        <h1>Appointment Management</h1>
+        <p>View and manage patient appointments.</p>
+      </div>
+    </div>
+
+    <!-- Filters -->
+    <section class="filter-card">
+      <div class="filter-heading">
+        <ion-icon name="filter-outline"></ion-icon>
+        <h2>Filter Appointments</h2>
+      </div>
+
+      <div class="filter-grid">
+
+        <ion-select
+          label="Appointment Status"
+          label-placement="floating"
+          fill="outline"
+          interface="popover"
+          [value]="selectedStatus()"
+          [disabled]="updatingAppointmentId() !== null"
+          (ionChange)="onStatusChange($event.detail.value)"
+        >
+          <ion-select-option value="">
+            All Statuses
+          </ion-select-option>
+
+          @for (status of statuses; track status) {
+            <ion-select-option [value]="status">
+              {{ status }}
+            </ion-select-option>
+          }
+        </ion-select>
+
+        <ion-input
+          type="date"
+          label="Appointment Date"
+          label-placement="floating"
+          fill="outline"
+          [value]="selectedDate()"
+          [disabled]="updatingAppointmentId() !== null"
+          (ionChange)="onDateChange($event.detail.value)"
+        ></ion-input>
+
+      </div>
+
+      <ion-button
+        fill="outline"
+        size="small"
+        [disabled]="loading() || updatingAppointmentId() !== null"
+        (click)="clearFilters()"
+      >
+        Clear Filters
+      </ion-button>
+    </section>
+
+    <!-- Error Message -->
+    @if (error()) {
+      <div class="error-banner" role="alert">
+        <ion-icon name="alert-circle-outline"></ion-icon>
+        <span>{{ error() }}</span>
+      </div>
+    }
+
+    <!-- Appointments Header -->
+    <div class="list-heading">
+      <h2>Appointments</h2>
+
+      <span>
+        {{ totalRecords() }} record(s)
+      </span>
+    </div>
+
+    <!-- Loading State -->
+    @if (loading()) {
+
+      <div class="loading-state">
+        <ion-spinner name="crescent"></ion-spinner>
+        <p>Loading appointments...</p>
+      </div>
+
+    } @else if (appointments().length === 0) {
+
+      <!-- Empty State -->
+      <div class="empty-state">
+        <ion-icon name="calendar-outline"></ion-icon>
+
+        <h3>No Appointments Found</h3>
+
+        <p>
+          There are no appointments matching your
+          selected filters.
+        </p>
+
+        <ion-button
+          fill="outline"
+          (click)="clearFilters()"
+        >
+          Clear Filters
+        </ion-button>
+      </div>
+
+    } @else {
+
+      <!-- Appointment Cards -->
+      <div class="appointments-list">
+
+        @for (appointment of appointments(); track appointment.id) {
+
+          <article class="appointment-card">
+
+            <!-- Patient and Status -->
+            <div class="appointment-card-header">
+
+              <div class="patient-info">
+                <h3>
+                  {{ appointment.patient?.full_name || 'Patient' }}
+                </h3>
+
+                <p>
+                  Appointment #{{ appointment.id }}
+                </p>
+              </div>
+
+              <span
+                class="status-badge"
+                [ngClass]="statusClass(appointment.status)"
+              >
+                {{ appointment.status }}
+              </span>
+
+            </div>
+
+            <!-- Appointment Information -->
+            <div class="appointment-details">
+
+              <!-- Date -->
+              <div class="detail-row">
+                <div class="detail-label">
+                  <ion-icon name="calendar-outline"></ion-icon>
+                  <span>Date</span>
+                </div>
+
+                <strong>
+                  {{ formatDate(appointment.slot.slot_date) }}
+                </strong>
+              </div>
+
+              <!-- Time -->
+              <div class="detail-row">
+                <div class="detail-label">
+                  <ion-icon name="time-outline"></ion-icon>
+                  <span>Time</span>
+                </div>
+
+                <strong>
+                  {{
+                    appointment.slot.slot_time_label ||
+                    appointment.slot.slot_time
+                  }}
+                </strong>
+              </div>
+
+              <!-- Patient Email -->
+              <div class="detail-row">
+                <div class="detail-label">
+                  <ion-icon name="person-outline"></ion-icon>
+                  <span>Patient Email</span>
+                </div>
+
+                <strong>
+                  {{ appointment.patient?.email || 'N/A' }}
+                </strong>
+              </div>
+
+              <!-- Reason -->
+              <div class="detail-row">
+                <div class="detail-label">
+                  <span>Reason</span>
+                </div>
+
+                <strong>
+                  {{ appointment.reason || 'Not specified' }}
+                </strong>
+              </div>
+
+              <!-- Staff Notes -->
+              @if (appointment.staff_notes) {
+                <div class="detail-row">
+                  <div class="detail-label">
+                    <span>Staff Notes</span>
+                  </div>
+
+                  <strong>
+                    {{ appointment.staff_notes }}
+                  </strong>
+                </div>
+              }
+
+            </div>
+
+            <!-- Status Management -->
+            @if (canUpdateStatus(appointment)) {
+
+              <div class="appointment-actions">
+
+                <div class="actions-heading">
+                  <h4>Manage Appointment</h4>
+
+                  <p>
+                    Choose an action to update
+                    this appointment.
+                  </p>
+                </div>
+
+                @if (isUpdating(appointment.id)) {
+
+                  <div class="updating-state">
+                    <ion-spinner name="crescent"></ion-spinner>
+                    <span>Updating appointment...</span>
+                  </div>
+
+                } @else {
+
+                  <div class="action-buttons">
+
+                    @if (appointment.status === 'Pending') {
+
+                      <!-- Confirm -->
+                      <ion-button
+                        color="success"
+                        size="small"
+                        [disabled]="updatingAppointmentId() !== null"
+                        (click)="confirmStatusChange(appointment, 'Confirmed')"
+                      >
+                        <ion-icon
+                          slot="start"
+                          name="checkmark-circle-outline"
+                        ></ion-icon>
+                        Confirm
+                      </ion-button>
+
+                      <!-- Reject -->
+                      <ion-button
+                        color="danger"
+                        fill="outline"
+                        size="small"
+                        [disabled]="updatingAppointmentId() !== null"
+                        (click)="confirmStatusChange(appointment, 'Rejected')"
+                      >
+                        <ion-icon
+                          slot="start"
+                          name="close-circle-outline"
+                        ></ion-icon>
+                        Reject
+                      </ion-button>
+
+                      <!-- Cancel -->
+                      <ion-button
+                        color="medium"
+                        fill="outline"
+                        size="small"
+                        [disabled]="updatingAppointmentId() !== null"
+                        (click)="confirmStatusChange(appointment, 'Cancelled')"
+                      >
+                        <ion-icon
+                          slot="start"
+                          name="ban-outline"
+                        ></ion-icon>
+                        Cancel
+                      </ion-button>
+
+                    }
+
+                    @if (appointment.status === 'Confirmed') {
+
+                      <!-- Complete -->
+                      <ion-button
+                        color="success"
+                        size="small"
+                        [disabled]="updatingAppointmentId() !== null"
+                        (click)="confirmStatusChange(appointment, 'Completed')"
+                      >
+                        <ion-icon
+                          slot="start"
+                          name="checkmark-circle-outline"
+                        ></ion-icon>
+                        Complete
+                      </ion-button>
+
+                      <!-- No-Show -->
+                      <ion-button
+                        color="warning"
+                        fill="outline"
+                        size="small"
+                        [disabled]="updatingAppointmentId() !== null"
+                        (click)="confirmStatusChange(appointment, 'No-Show')"
+                      >
+                        <ion-icon
+                          slot="start"
+                          name="warning-outline"
+                        ></ion-icon>
+                        No-Show
+                      </ion-button>
+
+                      <!-- Cancel -->
+                      <ion-button
+                        color="danger"
+                        fill="outline"
+                        size="small"
+                        [disabled]="updatingAppointmentId() !== null"
+                        (click)="confirmStatusChange(appointment, 'Cancelled')"
+                      >
+                        <ion-icon
+                          slot="start"
+                          name="close-circle-outline"
+                        ></ion-icon>
+                        Cancel
+                      </ion-button>
+
+                    }
+
+                  </div>
+
+                }
+
+              </div>
+
+            } @else {
+
+              <!-- Final Status -->
+              <div class="final-status">
+                <ion-icon
+                  name="checkmark-circle-outline"
+                ></ion-icon>
+
+                <span>
+                  This appointment has a final status
+                  and can no longer be updated.
+                </span>
+              </div>
+
+            }
+
+            <!-- VIEW DETAILS BUTTON -->
+            <div class="view-details-actions">
+              <ion-button
+                fill="outline"
+                size="small"
+                [routerLink]="['/appointments', appointment.id]"
+                [disabled]="updatingAppointmentId() !== null"
+              >
+                <ion-icon
+                  slot="start"
+                  name="document-text-outline"
+                ></ion-icon>
+                View Details
+              </ion-button>
+            </div>
+
+          </article>
+
+        }
+
+      </div>
+
+      <!-- Pagination -->
+      @if (totalPages() > 1) {
+
+        <div class="pagination">
+
+          <ion-button
+            fill="outline"
+            [disabled]="currentPage() <= 1 || loading() || updatingAppointmentId() !== null"
+            (click)="previousPage()"
+          >
+            <ion-icon
+              slot="start"
+              name="chevron-back-outline"
+            ></ion-icon>
+            Previous
+          </ion-button>
+
+          <span>
+            Page {{ currentPage() }} of {{ totalPages() }}
+          </span>
+
+          <ion-button
+            fill="outline"
+            [disabled]="currentPage() >= totalPages() || loading() || updatingAppointmentId() !== null"
+            (click)="nextPage()"
+          >
+            Next
+            <ion-icon
+              slot="end"
+              name="chevron-forward-outline"
+            ></ion-icon>
+          </ion-button>
+
+        </div>
+
+      }
+
+    }
+
+  </div>
+</ion-content>

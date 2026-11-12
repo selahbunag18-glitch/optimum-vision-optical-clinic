@@ -1,0 +1,155 @@
+<ion-header class="ion-no-border">
+  <ion-toolbar class="catalog-toolbar">
+
+    <ion-buttons slot="start">
+      <ion-button
+        class="back-button"
+        routerLink="/patient"
+        aria-label="Back to Dashboard"
+        (click)="blurActiveElement()">
+        <ion-icon slot="icon-only" name="arrow-back-outline"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+
+    <ion-title>Product Catalog</ion-title>
+
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="catalog-content">
+
+  <main class="catalog">
+
+    <section class="catalog-body">
+
+      <div class="catalog-intro">
+        <h1>Our Products</h1>
+        <p>Browse what Optimum Vision Optical offers, with prices and availability.</p>
+      </div>
+
+      <!-- FILTERS -->
+      <div class="filters">
+
+        <ion-input
+          label="Search"
+          labelPlacement="stacked"
+          fill="outline"
+          placeholder="Search name or brand"
+          [value]="searchTerm()"
+          (ionInput)="onSearchChange($event)">
+        </ion-input>
+
+        <ion-select
+          label="Category"
+          labelPlacement="stacked"
+          fill="outline"
+          interface="popover"
+          [value]="selectedCategory()"
+          (ionChange)="onCategoryChange($event)">
+
+          <ion-select-option value="">All Categories</ion-select-option>
+
+          @for (category of categories; track category) {
+            <ion-select-option [value]="category">
+              {{ category }}
+            </ion-select-option>
+          }
+
+        </ion-select>
+
+      </div>
+
+      @if (loading()) {
+
+        <div class="state">
+          <ion-spinner name="crescent"></ion-spinner>
+          <p>Loading products...</p>
+        </div>
+
+      } @else if (errorMessage()) {
+
+        <div class="state error">
+          <ion-icon name="warning-outline"></ion-icon>
+          <p>{{ errorMessage() }}</p>
+          <ion-button fill="outline" (click)="loadProducts(currentPage())">
+            Try Again
+          </ion-button>
+        </div>
+
+      } @else if (products().length === 0) {
+
+        <div class="state">
+          <ion-icon name="cube-outline"></ion-icon>
+          <h2>No Products Found</h2>
+          <p>Try a different search or category.</p>
+        </div>
+
+      } @else {
+
+        <section class="product-grid" aria-label="Products">
+
+          @for (product of products(); track product.id) {
+
+            <article class="product-card">
+
+              <div class="product-top">
+                <div class="product-icon">
+                  <ion-icon name="glasses-outline"></ion-icon>
+                </div>
+
+                <ion-chip [color]="getStockColor(product)">
+                  <ion-label>{{ product.availability }}</ion-label>
+                </ion-chip>
+              </div>
+
+              <h2>{{ product.product_name }}</h2>
+              <p class="brand">{{ product.brand || 'No Brand' }}</p>
+              <p class="category">{{ product.category }}</p>
+
+              @if (product.description) {
+                <p class="description">{{ product.description }}</p>
+              }
+
+              <strong class="price">{{ formatPrice(product.price) }}</strong>
+
+            </article>
+
+          }
+
+        </section>
+
+        @if (totalPages() > 1) {
+
+          <div class="pagination">
+
+            <ion-button
+              fill="outline"
+              [disabled]="currentPage() <= 1"
+              (click)="previousPage()">
+              Previous
+            </ion-button>
+
+            <span>Page {{ currentPage() }} of {{ totalPages() }}</span>
+
+            <ion-button
+              fill="outline"
+              [disabled]="currentPage() >= totalPages()"
+              (click)="nextPage()">
+              Next
+            </ion-button>
+
+          </div>
+
+        }
+
+      }
+
+    </section>
+
+    <footer class="catalog-footer">
+      Optimum Vision Optical Clinic Management System
+    </footer>
+
+  </main>
+
+</ion-content>

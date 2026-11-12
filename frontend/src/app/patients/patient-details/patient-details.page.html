@@ -1,0 +1,234 @@
+
+<ion-header class="ion-no-border">
+  <ion-toolbar class="bar">
+    <ion-buttons slot="start">
+      <ion-button
+        routerLink="/patients"
+        aria-label="Back to patient list"
+      >
+        <ion-icon
+          slot="icon-only"
+          name="arrow-back-outline"
+        ></ion-icon>
+      </ion-button>
+    </ion-buttons>
+
+    <ion-title>Patient Details</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="page-content">
+  <div class="wrap">
+
+    <!-- Loading State -->
+    @if (loading()) {
+      <div class="state">
+        <ion-spinner name="crescent"></ion-spinner>
+        <p>Loading patient information...</p>
+      </div>
+    }
+
+    <!-- Error State -->
+    @else if (error()) {
+      <div class="state state-error">
+        <ion-icon
+          name="alert-circle-outline"
+        ></ion-icon>
+
+        <h2>Unable to load patient</h2>
+        <p>{{ error() }}</p>
+
+        <ion-button (click)="loadPatient()">
+          <ion-icon
+            slot="start"
+            name="refresh-outline"
+          ></ion-icon>
+          Try Again
+        </ion-button>
+      </div>
+    }
+
+    <!-- Patient Information -->
+    @else if (patient(); as p) {
+
+      <!-- Profile Card -->
+      <section class="profile-card">
+        <div class="avatar">
+          {{ p.full_name.charAt(0).toUpperCase() }}
+        </div>
+
+        <h1>{{ p.full_name }}</h1>
+
+        <p class="patient-id">
+          Patient ID #{{ p.id }}
+        </p>
+
+        <span
+          class="status"
+          [class.inactive]="!p.is_active"
+        >
+          <ion-icon
+            name="checkmark-circle-outline"
+          ></ion-icon>
+
+          {{ p.is_active ? 'Active' : 'Inactive' }}
+        </span>
+      </section>
+
+      <!-- Personal Information -->
+      <section class="info-card">
+        <div class="section-heading">
+          <h2>Personal Information</h2>
+
+          <ion-icon name="person-outline"></ion-icon>
+        </div>
+
+        <div class="info-row">
+          <div class="info-icon">
+            <ion-icon name="person-outline"></ion-icon>
+          </div>
+
+          <div>
+            <span class="label">Full Name</span>
+            <p>{{ p.full_name }}</p>
+          </div>
+        </div>
+
+        <div class="info-row">
+          <div class="info-icon">
+            <ion-icon name="mail-outline"></ion-icon>
+          </div>
+
+          <div>
+            <span class="label">Email Address</span>
+            <p>{{ p.email || 'Not provided' }}</p>
+          </div>
+        </div>
+
+        <div class="info-row">
+          <div class="info-icon">
+            <ion-icon name="call-outline"></ion-icon>
+          </div>
+
+          <div>
+            <span class="label">Phone Number</span>
+            <p>{{ p.phone || 'Not provided' }}</p>
+          </div>
+        </div>
+
+        <div class="info-row">
+          <div class="info-icon">
+            <ion-icon name="calendar-outline"></ion-icon>
+          </div>
+
+          <div>
+            <span class="label">Birth Date</span>
+            <p>{{ formatDate(p.birth_date) }}</p>
+          </div>
+        </div>
+
+        <div class="info-row">
+          <div class="info-icon">
+            <ion-icon name="location-outline"></ion-icon>
+          </div>
+
+          <div>
+            <span class="label">Address</span>
+            <p>{{ p.address || 'Not provided' }}</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- Registration Information -->
+      <section class="info-card">
+        <div class="section-heading">
+          <h2>Registration Information</h2>
+
+          <ion-icon name="calendar-outline"></ion-icon>
+        </div>
+
+        <div class="info-row">
+          <div class="info-icon">
+            <ion-icon name="calendar-outline"></ion-icon>
+          </div>
+
+          <div>
+            <span class="label">Date Registered</span>
+            <p>{{ formatDate(p.created_at) }}</p>
+          </div>
+        </div>
+
+        <div class="info-row">
+          <div class="info-icon">
+            <ion-icon name="refresh-outline"></ion-icon>
+          </div>
+
+          <div>
+            <span class="label">Last Updated</span>
+            <p>{{ formatDate(p.updated_at) }}</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- Actions -->
+      <div class="actions">
+
+        <!-- Edit Patient -->
+        <ion-button
+          expand="block"
+          [routerLink]="['/patients', p.id, 'edit']"
+        >
+          <ion-icon
+            slot="start"
+            name="create-outline"
+          ></ion-icon>
+
+          Edit Patient Information
+        </ion-button>
+
+        <!-- Eye Examination & Prescription -->
+        <ion-button
+          expand="block"
+          [routerLink]="[
+            '/patients',
+            p.id,
+            'examinations'
+          ]"
+        >
+          <ion-icon
+            slot="start"
+            name="eye-outline"
+          ></ion-icon>
+
+          Eye Examination & Prescription
+        </ion-button>
+
+        <!-- View Patient History -->
+        <ion-button
+          expand="block"
+          fill="outline"
+          [routerLink]="['/patients', p.id, 'history']"
+        >
+          <ion-icon
+            slot="start"
+            name="time-outline"
+          ></ion-icon>
+
+          View Patient History
+        </ion-button>
+
+        <!-- Back to Patient List -->
+        <ion-button
+          expand="block"
+          fill="outline"
+          routerLink="/patients"
+        >
+          Back to Patient List
+        </ion-button>
+
+      </div>
+
+    }
+
+  </div>
+</ion-content>

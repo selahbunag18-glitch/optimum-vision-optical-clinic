@@ -1,0 +1,423 @@
+
+<ion-header class="ion-no-border">
+  <ion-toolbar class="bar">
+    <ion-buttons slot="start">
+      <ion-button
+        routerLink="/patients"
+        aria-label="Back to patient list"
+      >
+        <ion-icon
+          slot="icon-only"
+          name="arrow-back-outline"
+        ></ion-icon>
+      </ion-button>
+    </ion-buttons>
+
+    <ion-title>Add New Patient</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="page-content">
+  <div class="wrap">
+
+    <!-- Registration Success -->
+    @if (success()) {
+
+      <section class="success-card">
+        <div class="success-icon">
+          <ion-icon
+            name="checkmark-circle-outline"
+          ></ion-icon>
+        </div>
+
+        <h1>Patient Registered Successfully!</h1>
+
+        <p>
+          The patient record has been saved
+          in Optimum Vision Optical Clinic.
+        </p>
+
+        @if (registrationResult(); as result) {
+
+          <!-- Patient Information -->
+          <div class="patient-summary">
+            <h2>Patient Information</h2>
+
+            <div class="summary-row">
+              <span>Full Name</span>
+              <strong>
+                {{ result.patient.full_name }}
+              </strong>
+            </div>
+
+            <div class="summary-row">
+              <span>Email</span>
+              <strong>
+                {{ result.patient.email }}
+              </strong>
+            </div>
+
+            <div class="summary-row">
+              <span>Patient ID</span>
+              <strong>
+                #{{ result.patient.id }}
+              </strong>
+            </div>
+          </div>
+
+          <!-- Temporary Password -->
+          @if (result.temporary_password) {
+
+            <div class="password-card">
+              <h2>Temporary Password</h2>
+
+              <p>
+                Give this temporary password
+                directly to the patient.
+                It will only be shown once.
+              </p>
+
+              <div class="password-value">
+                {{ result.temporary_password }}
+              </div>
+
+              <p class="password-warning">
+                Keep this password private.
+                Ask the patient to change
+                their password after login.
+              </p>
+            </div>
+
+          } @else {
+
+            <!-- Existing Account Linked -->
+            <div class="patient-summary">
+              <p>
+                This patient already has an account.
+                Their existing login credentials
+                remain unchanged.
+              </p>
+            </div>
+
+          }
+        }
+
+        <!-- Success Actions -->
+        <div class="success-actions">
+
+          <ion-button
+            expand="block"
+            (click)="createAnother()"
+          >
+            <ion-icon
+              slot="start"
+              name="person-add-outline"
+            ></ion-icon>
+            Add Another Patient
+          </ion-button>
+
+          <ion-button
+            expand="block"
+            fill="outline"
+            (click)="goToPatientList()"
+          >
+            Back to Patient List
+          </ion-button>
+
+        </div>
+      </section>
+
+    } @else {
+
+      <!-- Page Heading -->
+      <section class="page-heading">
+        <div class="heading-icon">
+          <ion-icon
+            name="person-add-outline"
+          ></ion-icon>
+        </div>
+
+        <div>
+          <h1>Register New Patient</h1>
+
+          <p>
+            Enter the patient's information.
+            The system will automatically check
+            for existing records before registration.
+          </p>
+        </div>
+      </section>
+
+      <!-- API Error -->
+      @if (error()) {
+
+        <div class="error-banner" role="alert">
+          <ion-icon
+            name="alert-circle-outline"
+          ></ion-icon>
+
+          <span>
+            {{ error() }}
+          </span>
+        </div>
+
+      }
+
+      <!-- Existing Patient Found -->
+      @if (duplicatePatient(); as patient) {
+
+        <section class="patient-summary">
+          <h2>Existing Patient Found</h2>
+
+          <div class="summary-row">
+            <span>Patient ID</span>
+            <strong>
+              #{{ patient.id }}
+            </strong>
+          </div>
+
+          <div class="summary-row">
+            <span>Full Name</span>
+            <strong>
+              {{ patient.full_name }}
+            </strong>
+          </div>
+
+          <div class="summary-row">
+            <span>Email</span>
+            <strong>
+              {{ patient.email }}
+            </strong>
+          </div>
+
+          <div class="summary-row">
+            <span>Phone</span>
+            <strong>
+              {{ patient.phone || 'Not provided' }}
+            </strong>
+          </div>
+
+          <ion-button
+            expand="block"
+            fill="outline"
+            (click)="viewPatientDetails()"
+          >
+            <ion-icon
+              slot="start"
+              name="eye-outline"
+            ></ion-icon>
+            View Existing Patient
+          </ion-button>
+        </section>
+
+      }
+
+      <!-- Patient Registration Form -->
+      <form
+        [formGroup]="form"
+        (ngSubmit)="savePatient()"
+      >
+
+        <section class="form-card">
+
+          <h2>Personal Information</h2>
+
+          <p class="section-description">
+            Fields marked with * are required.
+          </p>
+
+          <!-- Full Name -->
+          <div class="form-field">
+
+            <ion-input
+              label="Full Name *"
+              labelPlacement="stacked"
+              fill="outline"
+              placeholder="Enter patient's full name"
+              formControlName="full_name"
+              [maxlength]="100"
+              (ionInput)="clearDuplicate()"
+            ></ion-input>
+
+            @if (
+              form.controls.full_name.touched &&
+              form.controls.full_name.invalid
+            ) {
+              <small class="field-error">
+                Full name must contain
+                2 to 100 characters.
+              </small>
+            }
+
+            @if (fieldErrors()['full_name']) {
+              <small class="field-error">
+                {{ fieldErrors()['full_name'] }}
+              </small>
+            }
+
+          </div>
+
+          <!-- Email Address -->
+          <div class="form-field">
+
+            <ion-input
+              label="Email Address *"
+              labelPlacement="stacked"
+              fill="outline"
+              type="email"
+              placeholder="patient@example.com"
+              formControlName="email"
+              (ionInput)="clearDuplicate()"
+            ></ion-input>
+
+            @if (
+              form.controls.email.touched &&
+              form.controls.email.invalid
+            ) {
+              <small class="field-error">
+                Enter a valid email address.
+              </small>
+            }
+
+            @if (fieldErrors()['email']) {
+              <small class="field-error">
+                {{ fieldErrors()['email'] }}
+              </small>
+            }
+
+          </div>
+
+          <!-- Phone Number -->
+          <div class="form-field">
+
+            <ion-input
+              label="Phone Number *"
+              labelPlacement="stacked"
+              fill="outline"
+              type="tel"
+              inputmode="numeric"
+              placeholder="09XXXXXXXXX"
+              formControlName="phone"
+              [maxlength]="11"
+              (ionInput)="onPhoneInput($event)"
+            ></ion-input>
+
+            @if (
+              form.controls.phone.touched &&
+              form.controls.phone.invalid
+            ) {
+              <small class="field-error">
+                Phone number must be exactly
+                11 digits and start with 09.
+              </small>
+            }
+
+            @if (fieldErrors()['phone']) {
+              <small class="field-error">
+                {{ fieldErrors()['phone'] }}
+              </small>
+            }
+
+          </div>
+
+          <!-- Birth Date -->
+          <div class="form-field">
+
+            <ion-input
+              label="Birth Date"
+              labelPlacement="stacked"
+              fill="outline"
+              type="date"
+              formControlName="birth_date"
+            ></ion-input>
+
+            @if (fieldErrors()['birth_date']) {
+              <small class="field-error">
+                {{ fieldErrors()['birth_date'] }}
+              </small>
+            }
+
+          </div>
+
+          <!-- Address -->
+          <div class="form-field">
+
+            <ion-textarea
+              label="Address"
+              labelPlacement="stacked"
+              fill="outline"
+              placeholder="Enter complete address"
+              formControlName="address"
+              [autoGrow]="true"
+              [rows]="3"
+              [maxlength]="255"
+            ></ion-textarea>
+
+            @if (
+              form.controls.address.touched &&
+              form.controls.address.invalid
+            ) {
+              <small class="field-error">
+                Address cannot exceed 255 characters.
+              </small>
+            }
+
+            @if (fieldErrors()['address']) {
+              <small class="field-error">
+                {{ fieldErrors()['address'] }}
+              </small>
+            }
+
+          </div>
+
+        </section>
+
+        <!-- Form Actions -->
+        <div class="actions">
+
+          <ion-button
+            type="submit"
+            expand="block"
+            [disabled]="saving() || form.invalid"
+          >
+
+            @if (saving()) {
+
+              <ion-spinner
+                slot="start"
+                name="crescent"
+              ></ion-spinner>
+
+              Checking and Registering...
+
+            } @else {
+
+              <ion-icon
+                slot="start"
+                name="save-outline"
+              ></ion-icon>
+
+              Register Patient
+
+            }
+
+          </ion-button>
+
+          <ion-button
+            type="button"
+            expand="block"
+            fill="outline"
+            routerLink="/patients"
+            [disabled]="saving()"
+          >
+            Cancel
+          </ion-button>
+
+        </div>
+
+      </form>
+
+    }
+
+  </div>
+</ion-content>

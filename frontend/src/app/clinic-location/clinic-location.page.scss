@@ -1,0 +1,240 @@
+:host {
+  display: block;
+}
+
+/* NAVBAR (same dark blue as the dashboard) */
+
+.location-toolbar {
+  --background: #245783;
+  --color: #ffffff;
+  --min-height: 70px;
+}
+
+.back-button {
+  --border-radius: 50%;
+  --background: rgba(255, 255, 255, 0.12);
+  --background-hover: rgba(255, 255, 255, 0.2);
+  --padding-start: 0;
+  --padding-end: 0;
+  width: 40px;
+  height: 40px;
+  min-width: 40px;
+  margin: 0 4px 0 8px;
+}
+
+.location-content {
+  --background: #dfe9f2;
+}
+
+/* PAGE LAYOUT: map fills the screen, button sits below it */
+
+.location-page {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 100%;
+  background: #dfe9f2;
+}
+
+.map-wrap {
+  position: relative;
+  flex: 1;
+  min-height: 320px;      /* guarantees the map never collapses to 0 height */
+  isolation: isolate;     /* keeps Leaflet's z-index inside this box */
+}
+
+/* The map needs an explicit size or Leaflet shows nothing */
+.map {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 0;
+  background: #cfdbe7;
+}
+
+/* ZOOM CONTROLS */
+
+.zoom-controls {
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  z-index: 1000;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  background: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 4px 16px rgba(0, 30, 60, 0.22);
+}
+
+.zoom-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  padding: 0;
+  border: 0;
+  background: #ffffff;
+  color: #245783;
+  cursor: pointer;
+
+  ion-icon {
+    font-size: 24px;
+  }
+
+  &:first-child {
+    border-bottom: 1px solid #e1e9f1;
+  }
+
+  &:hover:not(:disabled) {
+    background: #f0f5fa;
+  }
+
+  &:focus-visible {
+    outline: 2px solid #0066c6;
+    outline-offset: -2px;
+  }
+
+  &:disabled {
+    color: #b3c2d1;
+    cursor: not-allowed;
+  }
+}
+
+/* INFORMATION CARD */
+
+.info-card {
+  position: absolute;
+  left: 14px;
+  bottom: 32px;           /* leaves room for the OpenStreetMap credit */
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  width: calc(100% - 28px);
+  max-width: 380px;
+  box-sizing: border-box;
+  padding: 16px 18px;
+  background: #ffffff;
+  border-radius: 14px;
+  box-shadow: 0 8px 26px rgba(0, 30, 60, 0.22);
+}
+
+.info-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 44px;
+  height: 44px;
+  border-radius: 10px;
+  background: #e5f0fb;
+  color: #0066c6;
+
+  ion-icon {
+    font-size: 26px;
+  }
+}
+
+.info-text {
+  min-width: 0;
+
+  h2 {
+    margin: 0 0 4px;
+    font-size: 15px;
+    font-weight: 800;
+    line-height: 1.35;
+    color: #153654;
+  }
+
+  p {
+    margin: 0;
+    font-size: 13px;
+    line-height: 1.5;
+    color: #64798e;
+    overflow-wrap: anywhere;
+  }
+}
+
+/* NOT SET UP YET */
+
+.setup-notice {
+  position: absolute;
+  inset: 0;
+  z-index: 1000;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 24px;
+  text-align: center;
+  background: #dfe9f2;
+  color: #64748b;
+
+  ion-icon {
+    font-size: 48px;
+    color: #94a3b8;
+  }
+
+  h2 {
+    margin: 0;
+    font-size: 18px;
+    color: #153654;
+  }
+
+  p {
+    margin: 0;
+    font-size: 14px;
+  }
+}
+
+/* GET DIRECTIONS BUTTON */
+
+.actions {
+  flex-shrink: 0;
+  width: 100%;
+  max-width: 720px;
+  margin: 0 auto;
+  box-sizing: border-box;
+  padding: 14px 16px calc(14px + env(safe-area-inset-bottom, 0px));
+}
+
+.directions-button {
+  --background: #0066c6;
+  --background-hover: #0057a8;
+  --background-activated: #004c93;
+  --border-radius: 12px;
+  --box-shadow: 0 4px 14px rgba(0, 102, 198, 0.3);
+  min-height: 52px;
+  margin: 0;
+  font-size: 16px;
+  font-weight: 700;
+  text-transform: none;
+}
+
+/* MOBILE */
+
+@media (max-width: 650px) {
+  .location-toolbar {
+    --min-height: 60px;
+  }
+
+  .info-card {
+    left: 10px;
+    bottom: 30px;
+    width: calc(100% - 20px);
+    padding: 14px;
+  }
+
+  .zoom-controls {
+    top: 10px;
+    right: 10px;
+  }
+
+  .actions {
+    padding: 12px 12px calc(12px + env(safe-area-inset-bottom, 0px));
+  }
+}

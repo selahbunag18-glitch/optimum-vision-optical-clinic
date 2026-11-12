@@ -1,0 +1,102 @@
+<ion-header class="ion-no-border">
+  <ion-toolbar class="location-toolbar">
+
+    <ion-buttons slot="start">
+      <ion-button
+        class="back-button"
+        routerLink="/patient"
+        aria-label="Back to Dashboard"
+        (click)="blurActiveElement()">
+        <ion-icon slot="icon-only" name="arrow-back-outline"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+
+    <ion-title>Clinic Location</ion-title>
+
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="location-content" [scrollY]="false">
+
+  <main class="location-page">
+
+    <!-- MAP -->
+    <section class="map-wrap">
+
+      <div
+        #mapEl
+        class="map"
+        role="application"
+        aria-label="Map showing the clinic location">
+      </div>
+
+      @if (configured) {
+
+        <!-- ZOOM CONTROLS -->
+        <div class="zoom-controls">
+
+          <button
+            type="button"
+            class="zoom-button"
+            aria-label="Zoom in"
+            [disabled]="!canZoomIn()"
+            (click)="zoomIn()">
+            <ion-icon name="add-outline"></ion-icon>
+          </button>
+
+          <button
+            type="button"
+            class="zoom-button"
+            aria-label="Zoom out"
+            [disabled]="!canZoomOut()"
+            (click)="zoomOut()">
+            <ion-icon name="remove-outline"></ion-icon>
+          </button>
+
+        </div>
+
+        <!-- INFORMATION CARD -->
+        <article class="info-card">
+
+          <div class="info-icon">
+            <ion-icon name="location-outline"></ion-icon>
+          </div>
+
+          <div class="info-text">
+            <h2>{{ clinic.name }}</h2>
+            <p>{{ displayAddress }}</p>
+          </div>
+
+        </article>
+
+      } @else {
+
+        <div class="setup-notice" role="status">
+          <ion-icon name="location-outline"></ion-icon>
+          <h2>Clinic location is not available yet</h2>
+          <p>Please check back later.</p>
+        </div>
+
+      }
+
+    </section>
+
+    <!-- GET DIRECTIONS -->
+    <div class="actions">
+
+      <ion-button
+        class="directions-button"
+        expand="block"
+        [disabled]="!configured"
+        (click)="getDirections()">
+
+        <ion-icon slot="start" name="navigate-outline"></ion-icon>
+        Get Directions
+
+      </ion-button>
+
+    </div>
+
+  </main>
+
+</ion-content>

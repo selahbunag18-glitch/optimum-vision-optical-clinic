@@ -1,0 +1,456 @@
+
+<ion-header class="ion-no-border">
+  <ion-toolbar class="bar">
+    <ion-buttons slot="start">
+      <ion-button
+        (click)="goBack()"
+        aria-label="Back to patient details"
+      >
+        <ion-icon
+          slot="icon-only"
+          name="arrow-back-outline"
+        ></ion-icon>
+      </ion-button>
+    </ion-buttons>
+
+    <ion-title>Patient History</ion-title>
+
+    <ion-buttons slot="end">
+      <ion-button
+        (click)="loadHistory()"
+        [disabled]="loading()"
+        aria-label="Refresh history"
+      >
+        <ion-icon
+          slot="icon-only"
+          name="refresh-outline"
+        ></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="page-content">
+
+  <!-- Pull to Refresh -->
+  <ion-refresher
+    slot="fixed"
+    (ionRefresh)="refreshHistory($event)"
+  >
+    <ion-refresher-content>
+    </ion-refresher-content>
+  </ion-refresher>
+
+  <div class="wrap">
+
+    <!-- Page Heading -->
+    <section class="page-heading">
+      <div class="heading-icon">
+        <ion-icon name="time-outline"></ion-icon>
+      </div>
+
+      <div>
+        <h1>Patient History</h1>
+        <p>
+          View the patient's appointments,
+          purchases, and payment records.
+        </p>
+      </div>
+    </section>
+
+    <!-- Loading -->
+    @if (loading()) {
+      <div class="loading-state">
+        <ion-spinner name="crescent"></ion-spinner>
+        <p>Loading patient history...</p>
+      </div>
+    }
+
+    <!-- Error -->
+    @if (!loading() && error()) {
+      <div class="error-banner" role="alert">
+        <ion-icon
+          name="alert-circle-outline"
+        ></ion-icon>
+
+        <span>{{ error() }}</span>
+      </div>
+
+      <ion-button
+        expand="block"
+        fill="outline"
+        (click)="loadHistory()"
+      >
+        <ion-icon
+          slot="start"
+          name="refresh-outline"
+        ></ion-icon>
+        Try Again
+      </ion-button>
+    }
+
+    <!-- History Content -->
+    @if (!loading() && history(); as data) {
+
+      <!-- Patient Information -->
+      <section class="patient-card">
+        <h2>Patient Information</h2>
+
+        <div class="info-row">
+          <span>Full Name</span>
+          <strong>
+            {{ data.patient.full_name }}
+          </strong>
+        </div>
+
+        <div class="info-row">
+          <span>Email</span>
+          <strong>
+            {{ data.patient.email }}
+          </strong>
+        </div>
+
+        <div class="info-row">
+          <span>Phone</span>
+          <strong>
+            {{ data.patient.phone || 'N/A' }}
+          </strong>
+        </div>
+
+        <div class="info-row">
+          <span>Patient ID</span>
+          <strong>
+            #{{ data.patient.id }}
+          </strong>
+        </div>
+      </section>
+
+      <!-- Summary -->
+      <section class="summary-section">
+        <h2>History Overview</h2>
+
+        <div class="summary-grid">
+
+          <div class="summary-card">
+            <ion-icon
+              name="calendar-outline"
+            ></ion-icon>
+
+            <span>Total Appointments</span>
+
+            <strong>
+              {{ data.summary.appointment_count }}
+            </strong>
+          </div>
+
+          <div class="summary-card">
+            <ion-icon
+              name="cart-outline"
+            ></ion-icon>
+
+            <span>Total Purchases</span>
+
+            <strong>
+              {{ data.summary.sale_count }}
+            </strong>
+          </div>
+
+          <div class="summary-card">
+            <ion-icon
+              name="cash-outline"
+            ></ion-icon>
+
+            <span>Total Paid</span>
+
+            <strong>
+              {{ formatMoney(data.summary.total_paid) }}
+            </strong>
+          </div>
+
+          <div class="summary-card balance-card">
+            <ion-icon
+              name="receipt-outline"
+            ></ion-icon>
+
+            <span>Outstanding Balance</span>
+
+            <strong>
+              {{
+                formatMoney(
+                  data.summary.outstanding_balance
+                )
+              }}
+            </strong>
+          </div>
+
+        </div>
+      </section>
+
+      <!-- Appointment History -->
+      <section class="history-section">
+
+        <div class="section-heading">
+          <div>
+            <h2>Appointment History</h2>
+            <p>
+              Previous and upcoming appointments
+            </p>
+          </div>
+
+          <ion-icon
+            name="calendar-outline"
+          ></ion-icon>
+        </div>
+
+        @if (data.appointments.length === 0) {
+
+          <div class="empty-state">
+            <ion-icon
+              name="calendar-outline"
+            ></ion-icon>
+
+            <h3>No Appointments Found</h3>
+
+            <p>
+              This patient has no appointment
+              records yet.
+            </p>
+          </div>
+
+        } @else {
+
+          <div class="history-list">
+
+            @for (
+              appointment of data.appointments;
+              track appointment.id
+            ) {
+
+              <article class="history-card">
+
+                <div class="history-card-header">
+
+                  <div>
+                    <h3>
+                      Appointment #{{ appointment.id }}
+                    </h3>
+
+                    <p>
+                      {{
+                        formatDate(
+                          appointment.slot.slot_date
+                        )
+                      }}
+                    </p>
+                  </div>
+
+                  <span
+                    class="status-badge"
+                    [ngClass]="statusClass(appointment.status)"
+                  >
+                    {{ appointment.status }}
+                  </span>
+
+                </div>
+
+                <div class="history-details">
+
+                  <div class="detail-row">
+                    <span>Date</span>
+
+                    <strong>
+                      {{
+                        formatDate(
+                          appointment.slot.slot_date
+                        )
+                      }}
+                    </strong>
+                  </div>
+
+                  <div class="detail-row">
+                    <span>Time</span>
+
+                    <strong>
+                      {{
+                        appointment.slot.slot_time_label ||
+                        appointment.slot.slot_time
+                      }}
+                    </strong>
+                  </div>
+
+                  <div class="detail-row">
+                    <span>Reason</span>
+
+                    <strong>
+                      {{
+                        appointment.reason ||
+                        'Not specified'
+                      }}
+                    </strong>
+                  </div>
+
+                  @if (appointment.staff_notes) {
+                    <div class="notes-box">
+                      <span>Staff Notes</span>
+
+                      <p>
+                        {{ appointment.staff_notes }}
+                      </p>
+                    </div>
+                  }
+
+                </div>
+              </article>
+
+            }
+
+          </div>
+        }
+
+      </section>
+
+      <!-- Purchase History -->
+      <section class="history-section">
+
+        <div class="section-heading">
+          <div>
+            <h2>Purchase History</h2>
+            <p>
+              Sales and payment records
+            </p>
+          </div>
+
+          <ion-icon name="cart-outline"></ion-icon>
+        </div>
+
+        @if (data.sales.length === 0) {
+
+          <div class="empty-state">
+            <ion-icon
+              name="cart-outline"
+            ></ion-icon>
+
+            <h3>No Purchases Found</h3>
+
+            <p>
+              This patient has no purchase
+              records yet.
+            </p>
+          </div>
+
+        } @else {
+
+          <div class="history-list">
+
+            @for (
+              sale of data.sales;
+              track sale.id
+            ) {
+
+              <article class="history-card">
+
+                <div class="history-card-header">
+
+                  <div>
+                    <h3>
+                      Sale #{{ sale.id }}
+                    </h3>
+
+                    <p>
+                      {{ formatDate(sale.sale_date) }}
+                    </p>
+                  </div>
+
+                  <span
+                    class="status-badge"
+                    [ngClass]="statusClass(sale.payment_status)"
+                  >
+                    {{ sale.payment_status }}
+                  </span>
+
+                </div>
+
+                <div class="history-details">
+
+                  <div class="detail-row">
+                    <span>Sale Status</span>
+
+                    <strong>
+                      {{ sale.status }}
+                    </strong>
+                  </div>
+
+                  <div class="detail-row">
+                    <span>Items Purchased</span>
+
+                    <strong>
+                      {{ sale.item_count }}
+                    </strong>
+                  </div>
+
+                  <div class="detail-row">
+                    <span>Total Amount</span>
+
+                    <strong>
+                      {{
+                        formatMoney(sale.total_amount)
+                      }}
+                    </strong>
+                  </div>
+
+                  <div class="detail-row">
+                    <span>Amount Paid</span>
+
+                    <strong>
+                      {{
+                        formatMoney(sale.amount_paid)
+                      }}
+                    </strong>
+                  </div>
+
+                  <div class="detail-row">
+                    <span>Remaining Balance</span>
+
+                    <strong>
+                      {{ formatMoney(sale.balance) }}
+                    </strong>
+                  </div>
+
+                  @if (sale.notes) {
+                    <div class="notes-box">
+                      <span>Notes</span>
+
+                      <p>{{ sale.notes }}</p>
+                    </div>
+                  }
+
+                </div>
+
+              </article>
+
+            }
+
+          </div>
+        }
+
+      </section>
+
+      <!-- Back Button -->
+      <div class="page-actions">
+        <ion-button
+          expand="block"
+          fill="outline"
+          (click)="goBack()"
+        >
+          <ion-icon
+            slot="start"
+            name="arrow-back-outline"
+          ></ion-icon>
+          Back to Patient Details
+        </ion-button>
+      </div>
+
+    }
+
+  </div>
+</ion-content>

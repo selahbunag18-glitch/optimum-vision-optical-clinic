@@ -1,0 +1,297 @@
+<ion-header class="ion-no-border">
+
+  <ion-toolbar class="dashboard-toolbar">
+
+    <!-- LOGO AND CLINIC NAME -->
+    <ion-title>
+
+      <div class="brand">
+
+        <ion-icon
+          name="eye-outline"
+          class="brand-logo">
+        </ion-icon>
+
+        <span>Optimum Vision Optical</span>
+
+      </div>
+
+    </ion-title>
+
+    <ion-buttons slot="end" class="navbar-actions">
+
+      @if (!loading() && user()) {
+
+        <!-- HAMBURGER MENU (profile and log out are inside) -->
+        <ion-button
+          class="mobile-menu-button"
+          fill="clear"
+          [attr.aria-expanded]="menuOpen()"
+          aria-label="Account menu"
+          (click)="toggleMenu()">
+
+          <ion-icon
+            slot="icon-only"
+            [name]="menuOpen() ? 'close-outline' : 'menu-outline'">
+          </ion-icon>
+
+        </ion-button>
+
+      }
+
+    </ion-buttons>
+
+  </ion-toolbar>
+
+</ion-header>
+
+<ion-content class="dashboard-content">
+
+  @if (loading()) {
+
+    <div class="loading-state">
+
+      <ion-spinner name="crescent"></ion-spinner>
+
+      <p>Loading dashboard...</p>
+
+    </div>
+
+  } @else if (user(); as currentUser) {
+
+    <!-- ACCOUNT MENU -->
+    @if (menuOpen()) {
+
+      <div
+        class="menu-backdrop"
+        (click)="closeMenu()">
+      </div>
+
+      <section
+        class="mobile-account-menu"
+        aria-label="Account information">
+
+        <div class="account-details">
+
+          <div class="account-avatar">
+
+            <ion-icon name="person-circle-outline"></ion-icon>
+
+          </div>
+
+          <div class="account-info">
+
+            <h2>{{ fullName }}</h2>
+
+            <p>{{ roleLabel }}</p>
+
+          </div>
+
+        </div>
+
+        <div class="menu-divider"></div>
+
+        <ion-button
+          class="menu-logout"
+          fill="clear"
+          expand="block"
+          [disabled]="loggingOut()"
+          (click)="logout()">
+
+          <ion-icon
+            slot="start"
+            name="log-out-outline">
+          </ion-icon>
+
+          {{ loggingOut() ? 'Logging out...' : 'Log Out' }}
+
+        </ion-button>
+
+      </section>
+
+    }
+
+    @if (!isPatient) {
+
+      <!-- OWNER / STAFF DASHBOARD -->
+      <main class="staff-dashboard">
+
+        <div class="dashboard-body">
+
+          <!-- DESKTOP QUICK ACTIONS -->
+          <section
+            class="quick-actions"
+            aria-label="Quick Actions">
+
+            @for (action of quickActions; track action.title) {
+
+              <a
+                class="quick-action"
+                [routerLink]="action.route!"
+                (click)="blurLink($event)">
+
+                <ion-icon [name]="action.icon"></ion-icon>
+
+                <div class="quick-action-info">
+
+                  <strong>{{ action.title }}</strong>
+
+                  <small>{{ action.description }}</small>
+
+                </div>
+
+              </a>
+
+            }
+
+          </section>
+
+          <!-- DESKTOP MANAGEMENT -->
+          <section
+            class="management-grid"
+            aria-label="Management Modules">
+
+            @for (module of modules; track module.title) {
+
+              <a
+                class="management-card"
+                [routerLink]="module.route!"
+                (click)="blurLink($event)">
+
+                <div class="management-icon">
+
+                  <ion-icon [name]="module.icon"></ion-icon>
+
+                </div>
+
+                <div class="management-info">
+
+                  <h2>{{ module.title }}</h2>
+
+                  <p>{{ module.description }}</p>
+
+                </div>
+
+                <span class="open-module">
+                  Open Module
+                </span>
+
+              </a>
+
+            }
+
+          </section>
+
+          <!-- MOBILE COMBINED GRID -->
+          <section
+            class="mobile-staff-grid"
+            aria-label="Clinic Management">
+
+            @for (action of quickActions; track action.title) {
+
+              <a
+                class="mobile-staff-card"
+                [routerLink]="action.route!"
+                (click)="blurLink($event)">
+
+                <ion-icon
+                  class="mobile-card-icon"
+                  [name]="action.icon">
+                </ion-icon>
+
+                <h2>{{ action.title }}</h2>
+
+                <p>{{ action.description }}</p>
+
+              </a>
+
+            }
+
+            @for (module of modules; track module.title) {
+
+              <a
+                class="mobile-staff-card management-mobile-card"
+                [routerLink]="module.route!"
+                (click)="blurLink($event)">
+
+                <div class="mobile-icon-box">
+
+                  <ion-icon [name]="module.icon"></ion-icon>
+
+                </div>
+
+                <h2>{{ module.title }}</h2>
+
+                <p>{{ module.description }}</p>
+
+                <span>Open Module</span>
+
+              </a>
+
+            }
+
+          </section>
+
+        </div>
+
+        <footer class="dashboard-footer">
+          Optimum Vision Optical Clinic Management System
+        </footer>
+
+      </main>
+
+    } @else {
+
+      <!-- PATIENT DASHBOARD -->
+      <main class="patient-dashboard">
+
+        <section
+          class="patient-grid"
+          aria-label="Patient Services">
+
+          @for (module of patientModules; track module.title) {
+
+            @if (module.comingSoon) {
+
+              <div
+                class="patient-card coming-soon"
+                aria-disabled="true">
+
+                <ion-icon [name]="module.icon"></ion-icon>
+
+                <h2>{{ module.title }}</h2>
+
+                <small>Coming Soon</small>
+
+              </div>
+
+            } @else {
+
+              <a
+                class="patient-card"
+                [routerLink]="module.route!"
+                (click)="blurLink($event)">
+
+                <ion-icon [name]="module.icon"></ion-icon>
+
+                <h2>{{ module.title }}</h2>
+
+              </a>
+
+            }
+
+          }
+
+        </section>
+
+        <footer class="dashboard-footer patient-footer">
+          Optimum Vision Optical Clinic Management System
+        </footer>
+
+      </main>
+
+    }
+
+  }
+
+</ion-content>

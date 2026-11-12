@@ -1,0 +1,181 @@
+
+:host {
+  display: block;
+}
+
+ion-content {
+  --background: #f5f7fb;
+  --padding-top: 24px;
+  --padding-bottom: 40px;
+}
+
+.form-container {
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+.page-heading {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 24px;
+
+  h1 {
+    margin: 0 0 6px;
+    color: #172b4d;
+    font-size: 26px;
+    font-weight: 700;
+  }
+
+  p {
+    margin: 0;
+    color: #718096;
+    font-size: 14px;
+  }
+}
+
+.heading-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 58px;
+  height: 58px;
+  border-radius: 16px;
+  background: #e8f0ff;
+
+  ion-icon {
+    font-size: 30px;
+    color: #2563eb;
+  }
+}
+
+ion-card {
+  margin: 0;
+  border: 1px solid #e8edf5;
+  border-radius: 18px;
+  background: #ffffff;
+  box-shadow: 0 6px 24px rgba(20, 40, 80, 0.05);
+}
+
+ion-card-content {
+  padding: 30px;
+}
+
+h2 {
+  margin: 0 0 26px;
+  color: #172b4d;
+  font-size: 19px;
+  font-weight: 700;
+}
+
+.form-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 22px 18px;
+  margin-bottom: 20px;
+
+  ion-input,
+  ion-select,
+  ion-textarea {
+    width: 100%;
+    min-width: 0;
+    font-size: 14px;
+    --border-radius: 10px;
+    --highlight-color-focused: #2563eb;
+  }
+}
+
+.full-width {
+  grid-column: 1 / -1;
+}
+
+ion-note {
+  display: block;
+  margin-top: 12px;
+  font-size: 13px;
+}
+
+.loading-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 220px;
+  gap: 12px;
+
+  ion-spinner {
+    color: #2563eb;
+  }
+
+  p {
+    color: #718096;
+    font-size: 14px;
+  }
+}
+
+.message {
+  margin: 18px 0;
+  padding: 14px 16px;
+  border-radius: 10px;
+  font-size: 14px;
+}
+
+.error-message {
+  color: #b42318;
+  background: #fff0ee;
+  border: 1px solid #ffd5d0;
+}
+
+.success-message {
+  color: #067647;
+  background: #ecfdf3;
+  border: 1px solid #abefc6;
+}
+
+.form-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  margin-top: 30px;
+  padding-top: 22px;
+  border-top: 1px solid #edf0f5;
+
+  ion-button {
+    --border-radius: 10px;
+    min-height: 44px;
+    text-transform: none;
+    font-weight: 600;
+  }
+
+  ion-spinner {
+    width: 18px;
+    height: 18px;
+    margin-right: 8px;
+  }
+}
+
+@media (max-width: 600px) {
+  .page-heading h1 {
+    font-size: 21px;
+  }
+
+  ion-card-content {
+    padding: 18px;
+  }
+
+  .form-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .full-width {
+    grid-column: auto;
+  }
+
+  .form-actions {
+    flex-direction: column-reverse;
+
+    ion-button {
+      width: 100%;
+    }
+  }
+}

@@ -1,0 +1,633 @@
+
+/* =========================================
+   OPTIMUM VISION - PATIENT PROFILE
+========================================= */
+
+:host {
+  display: block;
+  --profile-navy: #102b46;
+  --profile-teal: #008f9c;
+  --profile-background: #f2f6fa;
+  --profile-muted: #64748b;
+  --profile-border: #e0e8ef;
+}
+
+/* =========================================
+   HEADER / TOOLBAR
+========================================= */
+
+.profile-toolbar {
+  --background: #102b46;
+  --color: #ffffff;
+  --min-height: 60px;
+
+  ion-title {
+    font-size: 19px;
+    font-weight: 700;
+    color: #ffffff;
+  }
+
+  ion-button {
+    --color: #ffffff;
+    --background: #008f9c;
+    --border-radius: 8px;
+    text-transform: none;
+    font-size: 13px;
+    font-weight: 600;
+  }
+
+  ion-icon {
+    font-size: 19px;
+  }
+}
+
+/* =========================================
+   PAGE BACKGROUND
+========================================= */
+
+.profile-content {
+  --background: #f2f6fa;
+  --color: #102b46;
+}
+
+.profile-container {
+  width: min(100% - 40px, 1050px);
+  margin: 0 auto;
+  padding: 35px 0 45px;
+}
+
+/* =========================================
+   LOADING
+========================================= */
+
+.loading {
+  min-height: 60vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 15px;
+  color: #64748b;
+
+  ion-spinner {
+    width: 38px;
+    height: 38px;
+    color: #008f9c;
+  }
+
+  p {
+    font-size: 14px;
+    margin: 0;
+  }
+}
+
+/* =========================================
+   PATIENT PROFILE BANNER
+========================================= */
+
+.profile-banner {
+  position: relative;
+  overflow: hidden;
+  text-align: center;
+  padding: 40px 24px;
+  margin-bottom: 25px;
+  border-radius: 18px;
+  background: linear-gradient(
+    135deg,
+    #102b46 0%,
+    #164f68 55%,
+    #008f9c 100%
+  );
+  box-shadow: 0 10px 30px rgba(16, 43, 70, 0.12);
+
+  &::before {
+    content: '';
+    position: absolute;
+    width: 240px;
+    height: 240px;
+    border-radius: 50%;
+    top: -130px;
+    right: -70px;
+    background: rgba(255, 255, 255, 0.06);
+  }
+
+  &::after {
+    content: '';
+    position: absolute;
+    width: 180px;
+    height: 180px;
+    border-radius: 50%;
+    bottom: -110px;
+    left: -50px;
+    background: rgba(255, 255, 255, 0.05);
+  }
+
+  .profile-avatar {
+    position: relative;
+    z-index: 1;
+    width: 85px;
+    height: 85px;
+    margin: 0 auto 15px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(255, 255, 255, 0.15);
+    border: 2px solid rgba(255, 255, 255, 0.3);
+
+    ion-icon {
+      color: #ffffff;
+      font-size: 68px;
+    }
+  }
+
+  h1 {
+    position: relative;
+    z-index: 1;
+    color: #ffffff;
+    font-size: 27px;
+    font-weight: 750;
+    margin: 0 0 8px;
+    overflow-wrap: anywhere;
+  }
+
+  p {
+    position: relative;
+    z-index: 1;
+    color: #d8eaf0;
+    font-size: 14px;
+    margin: 0 0 18px;
+    overflow-wrap: anywhere;
+  }
+}
+
+.patient-badge {
+  position: relative;
+  z-index: 1;
+  display: inline-flex;
+  align-items: center;
+  padding: 8px 17px;
+  border-radius: 30px;
+  background: rgba(255, 255, 255, 0.16);
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  color: #ffffff;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+/* =========================================
+   WHITE INFORMATION CARDS
+========================================= */
+
+.profile-card {
+  background: #ffffff;
+  border: 1px solid #e0e8ef;
+  border-radius: 16px;
+  padding: 30px;
+  margin-bottom: 24px;
+  box-shadow: 0 5px 22px rgba(16, 43, 70, 0.045);
+}
+
+.card-heading {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 16px;
+  padding-bottom: 22px;
+  margin-bottom: 10px;
+  border-bottom: 1px solid #e8eef3;
+
+  h2 {
+    color: #102b46;
+    font-size: 20px;
+    font-weight: 750;
+    margin: 0 0 6px;
+  }
+
+  p {
+    color: #64748b;
+    font-size: 13px;
+    margin: 0;
+    line-height: 1.5;
+  }
+}
+
+.edit-button {
+  --background: #008f9c;
+  --background-hover: #007d88;
+  --color: #ffffff;
+  --border-radius: 9px;
+  --box-shadow: none;
+
+  text-transform: none;
+  font-weight: 700;
+  font-size: 13px;
+  margin: 0;
+}
+
+/* =========================================
+   PERSONAL INFORMATION ROWS
+========================================= */
+
+.information-row {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  padding: 19px 8px;
+  border-bottom: 1px solid #edf1f5;
+
+  &:last-child {
+    border-bottom: none;
+  }
+
+  .information-icon {
+    flex-shrink: 0;
+    width: 46px;
+    height: 46px;
+    border-radius: 12px;
+    background: #e8f7f8;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    ion-icon {
+      color: #008f9c;
+      font-size: 23px;
+    }
+  }
+
+  > div:last-child {
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+  }
+
+  span {
+    display: block;
+    color: #64748b;
+    font-size: 12px;
+    font-weight: 500;
+  }
+
+  strong {
+    display: block;
+    color: #102b46;
+    font-size: 15px;
+    font-weight: 700;
+    overflow-wrap: anywhere;
+  }
+}
+
+/* =========================================
+   EDIT PROFILE FORM
+========================================= */
+
+.profile-form {
+  padding-top: 20px;
+
+  h3 {
+    color: #102b46;
+    font-size: 19px;
+    font-weight: 750;
+    margin: 0 0 8px;
+  }
+}
+
+.form-description,
+.password-description {
+  color: #64748b;
+  font-size: 13px;
+  line-height: 1.6;
+  margin: 0 0 24px;
+}
+
+.field-error {
+  color: #dc2626 !important;
+  font-size: 12px;
+}
+
+/* =========================================
+   FORM INPUTS
+========================================= */
+
+.password-field {
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+  margin-bottom: 20px;
+
+  label {
+    color: #102b46;
+    font-size: 13px;
+    font-weight: 700;
+  }
+
+  input {
+    width: 100%;
+    box-sizing: border-box;
+    padding: 14px 16px;
+    border: 1px solid #d5e2ea;
+    border-radius: 10px;
+    background: #ffffff;
+    color: #102b46;
+    font: inherit;
+    font-size: 14px;
+    outline: none;
+    transition:
+      border-color 0.2s ease,
+      box-shadow 0.2s ease;
+
+    &::placeholder {
+      color: #94a3b8;
+    }
+
+    &:focus {
+      border-color: #008f9c;
+      box-shadow: 0 0 0 3px rgba(0, 143, 156, 0.12);
+    }
+
+    &.ng-invalid.ng-touched {
+      border-color: #dc2626;
+    }
+  }
+
+  small {
+    color: #64748b;
+    font-size: 12px;
+    line-height: 1.5;
+  }
+}
+
+/* =========================================
+   FORM BUTTONS
+========================================= */
+
+.password-actions {
+  display: flex;
+  justify-content: flex-end;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: 25px;
+
+  ion-button {
+    --border-radius: 9px;
+    text-transform: none;
+    font-weight: 700;
+    margin: 0;
+  }
+
+  ion-button[type='submit'] {
+    --background: #008f9c;
+    --background-hover: #007d88;
+    --color: #ffffff;
+  }
+
+  ion-button[fill='outline'] {
+    --border-color: #cbd5e1;
+    --color: #334155;
+  }
+}
+
+/* =========================================
+   ACCOUNT SECURITY CARD
+========================================= */
+
+.security-card {
+  margin-top: 24px;
+
+  .card-heading h2 {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+
+    ion-icon {
+      color: #008f9c;
+      font-size: 23px;
+    }
+  }
+}
+
+.security-action {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  padding: 20px 5px 5px;
+
+  h3 {
+    margin: 0 0 8px;
+    color: #102b46;
+    font-size: 17px;
+    font-weight: 700;
+  }
+
+  p {
+    margin: 0;
+    color: #64748b;
+    font-size: 13px;
+    line-height: 1.6;
+  }
+
+  ion-button {
+    --background: #008f9c;
+    --background-hover: #007d88;
+    --color: #ffffff;
+    --border-radius: 9px;
+    --box-shadow: none;
+
+    flex-shrink: 0;
+    text-transform: none;
+    font-weight: 700;
+    margin: 0;
+  }
+}
+
+/* =========================================
+   PASSWORD FORM
+========================================= */
+
+.password-form {
+  padding-top: 20px;
+
+  h3 {
+    color: #102b46;
+    font-size: 19px;
+    font-weight: 750;
+    margin: 0 0 8px;
+  }
+}
+
+/* =========================================
+   SUCCESS / ERROR MESSAGES
+========================================= */
+
+.password-message {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 16px;
+  margin: 18px 0;
+  border-radius: 10px;
+  font-size: 13px;
+
+  ion-icon {
+    font-size: 23px;
+    flex-shrink: 0;
+  }
+
+  p {
+    margin: 0;
+    line-height: 1.6;
+  }
+}
+
+.success-message {
+  background: #e7f7ee;
+  border: 1px solid #b6e4c8;
+  color: #176b43;
+}
+
+.error-message {
+  background: #fff0f0;
+  border: 1px solid #f2c6c6;
+  color: #b42318;
+}
+
+/* =========================================
+   FOOTER
+========================================= */
+
+.profile-container footer {
+  text-align: center;
+  color: #94a3b8;
+  font-size: 12px;
+  padding: 15px 0 5px;
+}
+
+/* =========================================
+   TABLET
+========================================= */
+
+@media (max-width: 768px) {
+  .profile-container {
+    width: calc(100% - 30px);
+    padding: 25px 0 35px;
+  }
+
+  .profile-banner {
+    padding: 35px 20px;
+
+    h1 {
+      font-size: 24px;
+    }
+  }
+
+  .profile-card {
+    padding: 24px;
+  }
+}
+
+/* =========================================
+   MOBILE
+========================================= */
+
+@media (max-width: 650px) {
+  .profile-container {
+    width: calc(100% - 24px);
+    padding: 18px 0 30px;
+  }
+
+  .profile-toolbar {
+    ion-title {
+      font-size: 16px;
+    }
+
+    ion-button {
+      font-size: 12px;
+    }
+  }
+
+  .profile-banner {
+    padding: 30px 16px;
+    border-radius: 14px;
+
+    .profile-avatar {
+      width: 75px;
+      height: 75px;
+
+      ion-icon {
+        font-size: 60px;
+      }
+    }
+
+    h1 {
+      font-size: 22px;
+    }
+
+    p {
+      font-size: 13px;
+    }
+  }
+
+  .profile-card {
+    padding: 20px 16px;
+    border-radius: 13px;
+  }
+
+  .card-heading {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 15px;
+
+    h2 {
+      font-size: 18px;
+    }
+
+    .edit-button {
+      width: 100%;
+    }
+  }
+
+  .information-row {
+    gap: 12px;
+    padding: 17px 0;
+
+    .information-icon {
+      width: 42px;
+      height: 42px;
+
+      ion-icon {
+        font-size: 21px;
+      }
+    }
+
+    strong {
+      font-size: 14px;
+    }
+  }
+
+  .security-action {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 18px;
+
+    ion-button {
+      width: 100%;
+    }
+  }
+
+  .password-actions {
+    flex-direction: column;
+
+    ion-button {
+      width: 100%;
+    }
+  }
+
+  .profile-form,
+  .password-form {
+    padding-top: 18px;
+  }
+}

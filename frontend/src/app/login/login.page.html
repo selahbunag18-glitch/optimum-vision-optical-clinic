@@ -1,0 +1,219 @@
+
+<ion-content [fullscreen]="true" class="auth-content">
+  <main class="auth-layout">
+
+    <!-- DESKTOP BRANDING -->
+    <section class="auth-brand">
+      <div class="brand-inner">
+        <ion-icon
+          name="eye-outline"
+          class="brand-eye">
+        </ion-icon>
+
+        <h1>
+          Optimum Vision<br>
+          Optical
+        </h1>
+
+        <h2>Clinic Management System</h2>
+
+        <p>
+          Manage patients, appointments, inventory,
+          sales, and optical records in one system.
+        </p>
+      </div>
+    </section>
+
+    <!-- LOGIN PANEL -->
+    <section class="auth-form-area">
+      <div class="auth-card" [class.shake]="shake()">
+
+        <!-- MOBILE BRAND -->
+        <div class="mobile-brand">
+          <ion-icon name="eye-outline"></ion-icon>
+          <h1>Optimum Vision<br>Optical</h1>
+        </div>
+
+        <!-- DESKTOP LOGO -->
+        <div class="auth-logo">
+          <ion-icon name="eye-outline"></ion-icon>
+        </div>
+
+        @if (lockSeconds() > 0) {
+          <div class="lockout-panel" role="alert">
+            <ion-icon
+              name="lock-closed-outline"
+              class="lockout-icon">
+            </ion-icon>
+
+            <h2>Too Many Failed Attempts</h2>
+
+            <p>
+              Login is temporarily disabled.<br>
+              Please try again after:
+            </p>
+
+            <div class="countdown-circle">
+              <strong>
+                {{ countdownText }}
+              </strong>
+            </div>
+
+            <span class="countdown-label">
+              seconds
+            </span>
+          </div>
+        } @else {
+          <div class="auth-heading">
+            <h2>Log In to Your Account</h2>
+            <p>
+              Enter your email and password to continue.
+            </p>
+          </div>
+        }
+
+        @if (lockSeconds() === 0 && errorMessage()) {
+          <div class="auth-alert" role="alert">
+            <ion-icon
+              name="alert-circle-outline">
+            </ion-icon>
+
+            <div>
+              <strong>{{ errorMessage() }}</strong>
+
+              @if (attemptsHint()) {
+                <span>{{ attemptsHint() }}</span>
+              }
+            </div>
+          </div>
+        }
+
+        <form
+          [formGroup]="form"
+          (ngSubmit)="submit()"
+          novalidate>
+
+          <!-- EMAIL -->
+          <div class="auth-field">
+            <ion-input
+              formControlName="email"
+              type="email"
+              inputmode="email"
+              autocomplete="email"
+              fill="outline"
+              label="Email"
+              labelPlacement="floating">
+
+              <ion-icon
+                slot="start"
+                name="mail-outline">
+              </ion-icon>
+            </ion-input>
+
+            @if (
+              form.controls.email.touched &&
+              form.controls.email.invalid
+            ) {
+              <small class="field-error">
+                {{ form.controls.email.hasError('required')
+                  ? 'Email is required.'
+                  : 'Enter a valid email address.' }}
+              </small>
+            } @else if (fieldErrors()['email']) {
+              <small class="field-error">
+                {{ fieldErrors()['email'] }}
+              </small>
+            }
+          </div>
+
+          <!-- PASSWORD -->
+          <div class="auth-field">
+            <ion-input
+              formControlName="password"
+              [type]="showPassword() ? 'text' : 'password'"
+              autocomplete="current-password"
+              fill="outline"
+              label="Password"
+              labelPlacement="floating">
+
+              <ion-icon
+                slot="start"
+                name="lock-closed-outline">
+              </ion-icon>
+
+              <ion-button
+                slot="end"
+                type="button"
+                fill="clear"
+                class="password-toggle"
+                [attr.aria-label]="showPassword()
+                  ? 'Hide password'
+                  : 'Show password'"
+                (click)="togglePassword()">
+
+                <ion-icon
+                  slot="icon-only"
+                  [name]="showPassword()
+                    ? 'eye-off-outline'
+                    : 'eye-outline'">
+                </ion-icon>
+              </ion-button>
+            </ion-input>
+
+            @if (
+              form.controls.password.touched &&
+              form.controls.password.invalid
+            ) {
+              <small class="field-error">
+                Password is required.
+              </small>
+            } @else if (fieldErrors()['password']) {
+              <small class="field-error">
+                {{ fieldErrors()['password'] }}
+              </small>
+            }
+          </div>
+
+          <ion-button
+            expand="block"
+            type="submit"
+            class="auth-submit"
+            [disabled]="loading() || lockSeconds() > 0">
+
+            @if (loading()) {
+              <ion-spinner name="crescent"></ion-spinner>
+            } @else {
+              Log In
+            }
+          </ion-button>
+        </form>
+
+        <p class="auth-switch">
+          Don't have an account?
+          <a routerLink="/register">Register</a>
+        </p>
+
+      </div>
+    </section>
+
+    <!-- FULL-WIDTH DESKTOP WAVE -->
+    <div class="auth-wave" aria-hidden="true">
+      <svg
+        viewBox="0 0 1440 120"
+        preserveAspectRatio="none"
+        xmlns="http://www.w3.org/2000/svg">
+
+        <path
+          d="M0 65 C190 -20 350 145 570 83 S910 -15 1120 36 S1320 62 1440 50 L1440 120 L0 120Z"
+          fill="#40a7ed">
+        </path>
+
+        <path
+          d="M0 88 C190 4 350 160 570 102 S910 5 1120 56 S1320 81 1440 70 L1440 120 L0 120Z"
+          fill="#005dbb">
+        </path>
+      </svg>
+    </div>
+
+  </main>
+</ion-content>

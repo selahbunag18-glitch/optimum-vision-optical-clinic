@@ -1,0 +1,675 @@
+:host {
+  display: block;
+
+  --primary: #2563eb;
+  --text: #1e293b;
+  --muted: #64748b;
+  --border: #dbe4f0;
+  --background: #f8fafc;
+}
+
+// -----------------------------------------
+// TOOLBAR (navy header + teal back button)
+// -----------------------------------------
+
+ion-toolbar.app-toolbar {
+  --background: #0f2a44;
+  --color: #ffffff;
+  --border-width: 0;
+  --padding-start: 8px;
+  --padding-end: 8px;
+  --min-height: 70px;
+
+  ion-title {
+    color: #ffffff;
+    font-size: 20px;
+    font-weight: 700;
+  }
+
+  .back-btn {
+    --background: #0e8f9b;
+    --background-hover: #0b7882;
+    --background-activated: #0b7882;
+    --color: #ffffff;
+    --border-radius: 50%;
+    --padding-start: 0;
+    --padding-end: 0;
+
+    width: 48px;
+    height: 48px;
+    margin: 0 6px;
+
+    ion-icon {
+      font-size: 24px;
+    }
+  }
+}
+
+ion-content {
+  --background: var(--background);
+}
+
+.page-container {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 28px 24px 50px;
+}
+
+// -----------------------------------------
+// PAGE HEADING
+// -----------------------------------------
+
+.page-heading {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  margin-bottom: 30px;
+
+  .heading-icon {
+    width: 60px;
+    height: 60px;
+    border-radius: 18px;
+    background: #eff6ff;
+    color: var(--primary);
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    ion-icon {
+      font-size: 30px;
+    }
+  }
+
+  h1 {
+    margin: 0 0 7px;
+    font-size: 28px;
+    font-weight: 750;
+    color: var(--text);
+  }
+
+  p {
+    margin: 0;
+    font-size: 15px;
+    color: var(--muted);
+  }
+}
+
+// -----------------------------------------
+// FILTERS
+// -----------------------------------------
+
+.filter-card {
+  background: #ffffff;
+  border: 1px solid var(--border);
+  border-radius: 18px;
+  padding: 27px;
+  margin-bottom: 30px;
+  box-shadow: 0 3px 12px rgba(15, 23, 42, 0.025);
+}
+
+.filter-heading {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 22px;
+
+  ion-icon {
+    font-size: 23px;
+    color: var(--primary);
+  }
+
+  h2 {
+    margin: 0;
+    font-size: 19px;
+    font-weight: 700;
+    color: var(--text);
+  }
+}
+
+.filter-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 20px;
+  margin-bottom: 18px;
+
+  ion-select,
+  ion-input {
+    width: 100%;
+  }
+}
+
+.filter-card > ion-button {
+  --border-radius: 9px;
+  text-transform: none;
+  font-weight: 600;
+}
+
+// -----------------------------------------
+// LIST HEADING
+// -----------------------------------------
+
+.list-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 15px;
+  margin-bottom: 18px;
+
+  h2 {
+    margin: 0;
+    font-size: 21px;
+    font-weight: 750;
+    color: var(--text);
+  }
+
+  span {
+    color: var(--muted);
+    font-size: 14px;
+  }
+}
+
+// -----------------------------------------
+// APPOINTMENT CARDS
+// -----------------------------------------
+
+.appointments-list {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.appointment-card {
+  background: #ffffff;
+  border: 1px solid var(--border);
+  border-radius: 18px;
+  padding: 25px;
+  box-shadow: 0 3px 12px rgba(15, 23, 42, 0.025);
+}
+
+.appointment-card-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 15px;
+  padding-bottom: 20px;
+  border-bottom: 1px solid var(--border);
+}
+
+.patient-info {
+  h3 {
+    margin: 0 0 7px;
+    font-size: 17px;
+    font-weight: 750;
+    color: var(--text);
+  }
+
+  p {
+    margin: 0;
+    font-size: 14px;
+    color: var(--muted);
+  }
+}
+
+// -----------------------------------------
+// STATUS BADGES
+// -----------------------------------------
+
+.status-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+
+  padding: 8px 14px;
+  border-radius: 999px;
+
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.status-pending {
+  background: #fef3c7;
+  color: #92400e;
+}
+
+.status-success {
+  background: #dcfce7;
+  color: #166534;
+}
+
+.status-danger {
+  background: #fee2e2;
+  color: #991b1b;
+}
+
+// -----------------------------------------
+// APPOINTMENT DETAILS
+// -----------------------------------------
+
+.appointment-details {
+  margin-top: 12px;
+}
+
+.detail-row {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 20px;
+
+  padding: 15px 0;
+  border-bottom: 1px solid #edf2f7;
+
+  &:last-child {
+    border-bottom: none;
+  }
+
+  strong {
+    color: var(--text);
+    font-size: 14px;
+    font-weight: 650;
+    text-align: right;
+    overflow-wrap: anywhere;
+  }
+}
+
+.detail-label {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+
+  color: var(--muted);
+  font-size: 14px;
+
+  ion-icon {
+    font-size: 19px;
+    color: #94a3b8;
+  }
+}
+
+// -----------------------------------------
+// APPOINTMENT STATUS MANAGEMENT
+// -----------------------------------------
+
+.appointment-actions {
+  margin-top: 20px;
+  padding: 20px;
+
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 13px;
+}
+
+.actions-heading {
+  margin-bottom: 17px;
+
+  h4 {
+    margin: 0 0 6px;
+    color: var(--text);
+    font-size: 15px;
+    font-weight: 700;
+  }
+
+  p {
+    margin: 0;
+    color: var(--muted);
+    font-size: 12px;
+    line-height: 1.5;
+  }
+}
+
+.action-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+
+  ion-button {
+    --border-radius: 9px;
+
+    min-height: 40px;
+    margin: 0;
+
+    font-size: 12px;
+    font-weight: 650;
+    text-transform: none;
+
+    ion-icon {
+      font-size: 17px;
+    }
+  }
+}
+
+// -----------------------------------------
+// UPDATING STATE
+// -----------------------------------------
+
+.updating-state {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+
+  padding: 12px 0;
+
+  color: var(--muted);
+  font-size: 13px;
+
+  ion-spinner {
+    width: 22px;
+    height: 22px;
+    color: var(--primary);
+  }
+}
+
+// -----------------------------------------
+// FINAL APPOINTMENT STATUS
+// -----------------------------------------
+
+.final-status {
+  display: flex;
+  align-items: center;
+  gap: 11px;
+
+  margin-top: 18px;
+  padding: 15px 17px;
+
+  background: #f1f5f9;
+  border: 1px solid #e2e8f0;
+  border-radius: 11px;
+
+  color: #64748b;
+  font-size: 12px;
+  line-height: 1.5;
+
+  ion-icon {
+    font-size: 20px;
+    flex-shrink: 0;
+  }
+}
+
+// -----------------------------------------
+// VIEW APPOINTMENT DETAILS BUTTON
+// -----------------------------------------
+
+.view-details-actions {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+
+  margin-top: 16px;
+  padding-top: 16px;
+
+  border-top: 1px solid #e2e8f0;
+
+  ion-button {
+    --border-radius: 9px;
+    --border-color: #2563eb;
+    --color: #2563eb;
+    --background: #ffffff;
+    --background-hover: #eff6ff;
+
+    min-height: 42px;
+    margin: 0;
+
+    font-size: 13px;
+    font-weight: 600;
+    text-transform: none;
+
+    ion-icon {
+      font-size: 18px;
+    }
+  }
+}
+
+// -----------------------------------------
+// ERROR BANNER
+// -----------------------------------------
+
+.error-banner {
+  display: flex;
+  align-items: flex-start;
+  gap: 11px;
+
+  padding: 15px 18px;
+  margin-bottom: 20px;
+
+  background: #fef2f2;
+  border: 1px solid #fecaca;
+  border-radius: 11px;
+
+  color: #b91c1c;
+  font-size: 13px;
+  line-height: 1.5;
+
+  ion-icon {
+    font-size: 21px;
+    flex-shrink: 0;
+  }
+}
+
+// -----------------------------------------
+// LOADING STATE
+// -----------------------------------------
+
+.loading-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+
+  min-height: 220px;
+
+  ion-spinner {
+    width: 34px;
+    height: 34px;
+    color: var(--primary);
+  }
+
+  p {
+    color: var(--muted);
+    font-size: 13px;
+  }
+}
+
+// -----------------------------------------
+// EMPTY STATE
+// -----------------------------------------
+
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+
+  min-height: 260px;
+  padding: 30px;
+
+  background: #ffffff;
+  border: 1px solid var(--border);
+  border-radius: 16px;
+
+  text-align: center;
+
+  ion-icon {
+    font-size: 45px;
+    color: #94a3b8;
+    margin-bottom: 14px;
+  }
+
+  h3 {
+    margin: 0 0 9px;
+    color: var(--text);
+    font-size: 17px;
+    font-weight: 700;
+  }
+
+  p {
+    max-width: 400px;
+    margin: 0;
+    color: var(--muted);
+    font-size: 13px;
+    line-height: 1.6;
+  }
+
+  ion-button {
+    margin-top: 18px;
+    --border-radius: 9px;
+    text-transform: none;
+  }
+}
+
+// -----------------------------------------
+// PAGINATION
+// -----------------------------------------
+
+.pagination {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 18px;
+
+  margin-top: 25px;
+
+  span {
+    color: var(--muted);
+    font-size: 13px;
+  }
+
+  ion-button {
+    --border-radius: 9px;
+    text-transform: none;
+  }
+}
+
+// -----------------------------------------
+// TABLET RESPONSIVE
+// -----------------------------------------
+
+@media (max-width: 768px) {
+  .page-container {
+    padding: 22px 16px 40px;
+  }
+
+  .filter-grid {
+    grid-template-columns: 1fr;
+    gap: 13px;
+  }
+
+  .page-heading h1 {
+    font-size: 24px;
+  }
+
+  .appointment-card {
+    padding: 20px;
+  }
+}
+
+// -----------------------------------------
+// MOBILE RESPONSIVE
+// -----------------------------------------
+
+@media (max-width: 480px) {
+  ion-toolbar.app-toolbar ion-title {
+    font-size: 17px;
+  }
+
+  .page-container {
+    padding: 18px 12px 30px;
+  }
+
+  .page-heading {
+    align-items: flex-start;
+    gap: 12px;
+
+    .heading-icon {
+      width: 47px;
+      height: 47px;
+      border-radius: 13px;
+
+      ion-icon {
+        font-size: 24px;
+      }
+    }
+
+    h1 {
+      font-size: 21px;
+    }
+
+    p {
+      font-size: 12px;
+    }
+  }
+
+  .filter-card {
+    padding: 17px;
+    border-radius: 13px;
+  }
+
+  .filter-heading h2 {
+    font-size: 16px;
+  }
+
+  .list-heading h2 {
+    font-size: 18px;
+  }
+
+  .appointment-card {
+    padding: 17px;
+    border-radius: 13px;
+  }
+
+  .appointment-card-header {
+    gap: 10px;
+  }
+
+  .patient-info h3 {
+    font-size: 15px;
+  }
+
+  .status-badge {
+    padding: 7px 10px;
+    font-size: 11px;
+  }
+
+  .detail-row {
+    gap: 10px;
+    padding: 13px 0;
+
+    strong,
+    .detail-label {
+      font-size: 12px;
+    }
+  }
+
+  .appointment-actions {
+    padding: 15px;
+  }
+
+  .action-buttons {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 9px;
+
+    ion-button {
+      width: 100%;
+      margin: 0;
+    }
+  }
+
+  .view-details-actions {
+    ion-button {
+      width: 100%;
+      margin: 0;
+    }
+  }
+
+  .pagination {
+    gap: 9px;
+
+    ion-button {
+      font-size: 12px;
+    }
+  }
+}

@@ -1,0 +1,181 @@
+
+<ion-header>
+  <ion-toolbar color="primary">
+
+    <ion-buttons slot="start">
+      <ion-button (click)="goBack()">
+        <ion-icon
+          slot="icon-only"
+          name="arrow-back-outline">
+        </ion-icon>
+      </ion-button>
+    </ion-buttons>
+
+    <ion-title>Edit Product</ion-title>
+
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+
+  <div class="form-container">
+
+    <div class="page-heading">
+      <div class="heading-icon">
+        <ion-icon name="create-outline"></ion-icon>
+      </div>
+
+      <div>
+        <h1>Edit Optical Product</h1>
+        <p>Update the product information below.</p>
+      </div>
+    </div>
+
+    <!-- LOADING -->
+    <div class="loading-state" *ngIf="loading()">
+      <ion-spinner name="crescent"></ion-spinner>
+      <p>Loading product...</p>
+    </div>
+
+    <!-- ERROR WHEN LOADING -->
+    <div
+      class="message error-message"
+      *ngIf="errorMessage()">
+      {{ errorMessage() }}
+    </div>
+
+    <!-- EDIT FORM -->
+    <ion-card *ngIf="!loading() && productId > 0">
+      <ion-card-content>
+
+        <form (ngSubmit)="saveChanges()">
+
+          <h2>Product Information</h2>
+
+          <div class="form-grid">
+
+            <ion-input
+              class="full-width"
+              label="Product Name *"
+              labelPlacement="stacked"
+              fill="outline"
+              name="productName"
+              [(ngModel)]="productName"
+              [disabled]="saving()"
+              required>
+            </ion-input>
+
+            <ion-select
+              label="Category *"
+              labelPlacement="stacked"
+              fill="outline"
+              interface="popover"
+              name="category"
+              [(ngModel)]="category"
+              [disabled]="saving()"
+              required>
+
+              <ion-select-option
+                *ngFor="let item of categories"
+                [value]="item">
+                {{ item }}
+              </ion-select-option>
+
+            </ion-select>
+
+            <ion-input
+              label="Brand"
+              labelPlacement="stacked"
+              fill="outline"
+              name="brand"
+              [(ngModel)]="brand"
+              [disabled]="saving()">
+            </ion-input>
+
+            <ion-input
+              label="SKU"
+              labelPlacement="stacked"
+              fill="outline"
+              name="sku"
+              [(ngModel)]="sku"
+              [disabled]="saving()">
+            </ion-input>
+
+            <ion-input
+              class="full-width"
+              label="Price (PHP) *"
+              labelPlacement="stacked"
+              fill="outline"
+              type="number"
+              min="0"
+              step="0.01"
+              name="price"
+              [(ngModel)]="price"
+              [disabled]="saving()"
+              required>
+            </ion-input>
+
+            <ion-textarea
+              class="full-width"
+              label="Description"
+              labelPlacement="stacked"
+              fill="outline"
+              name="description"
+              [(ngModel)]="description"
+              [autoGrow]="true"
+              [disabled]="saving()">
+            </ion-textarea>
+
+          </div>
+
+          <ion-note>
+            Fields marked with * are required.
+            Stock quantity is managed separately.
+          </ion-note>
+
+          <div
+            class="message success-message"
+            *ngIf="successMessage()">
+            {{ successMessage() }}
+          </div>
+
+          <div class="form-actions">
+
+            <ion-button
+              type="button"
+              fill="outline"
+              color="medium"
+              [disabled]="saving()"
+              (click)="goBack()">
+              Cancel
+            </ion-button>
+
+            <ion-button
+              type="submit"
+              [disabled]="saving()">
+
+              <ion-spinner
+                *ngIf="saving()"
+                name="crescent">
+              </ion-spinner>
+
+              <ion-icon
+                *ngIf="!saving()"
+                slot="start"
+                name="save-outline">
+              </ion-icon>
+
+              {{ saving() ? 'Saving...' : 'Save Changes' }}
+
+            </ion-button>
+
+          </div>
+
+        </form>
+
+      </ion-card-content>
+    </ion-card>
+
+  </div>
+
+</ion-content>

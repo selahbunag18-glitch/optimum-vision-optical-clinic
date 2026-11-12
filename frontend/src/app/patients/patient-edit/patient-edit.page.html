@@ -1,0 +1,235 @@
+
+<ion-header class="ion-no-border">
+  <ion-toolbar class="bar">
+    <ion-buttons slot="start">
+      <ion-button
+        [routerLink]="patientId() ? ['/patients', patientId()] : '/patients'"
+        aria-label="Back to patient"
+      >
+        <ion-icon
+          slot="icon-only"
+          name="arrow-back-outline"
+        ></ion-icon>
+      </ion-button>
+    </ion-buttons>
+
+    <ion-title>Edit Patient</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="page-content">
+  <div class="wrap">
+
+    <!-- Loading -->
+    @if (loading()) {
+      <div class="state">
+        <ion-spinner name="crescent"></ion-spinner>
+        <p>Loading patient information...</p>
+      </div>
+    }
+
+    <!-- Error while loading -->
+    @else if (error() && !patientId()) {
+      <div class="state state-error">
+        <ion-icon name="alert-circle-outline"></ion-icon>
+        <h2>Unable to load patient</h2>
+        <p>{{ error() }}</p>
+
+        <ion-button routerLink="/patients">
+          Back to Patient List
+        </ion-button>
+      </div>
+    }
+
+    @else {
+
+      <!-- Page Heading -->
+      <section class="page-heading">
+        <div class="heading-icon">
+          <ion-icon name="person-outline"></ion-icon>
+        </div>
+
+        <div>
+          <h1>Edit Patient Information</h1>
+          <p>Update the patient's personal details below.</p>
+        </div>
+      </section>
+
+      <!-- Error Message -->
+      @if (error()) {
+        <div class="error-banner" role="alert">
+          <ion-icon name="alert-circle-outline"></ion-icon>
+          <span>{{ error() }}</span>
+        </div>
+      }
+
+      <!-- Edit Form -->
+      <form
+        [formGroup]="form"
+        (ngSubmit)="savePatient()"
+      >
+        <section class="form-card">
+          <h2>Personal Information</h2>
+
+          <p class="section-description">
+            Fields marked with * are required.
+          </p>
+
+          <!-- Full Name -->
+          <div class="form-field">
+            <ion-input
+              label="Full Name *"
+              labelPlacement="stacked"
+              fill="outline"
+              placeholder="Enter full name"
+              formControlName="full_name"
+              [maxlength]="100"
+            ></ion-input>
+
+            @if (
+              form.controls.full_name.touched &&
+              form.controls.full_name.invalid
+            ) {
+              <small class="field-error">
+                Enter a name with 2 to 100 characters.
+              </small>
+            }
+
+            @if (fieldErrors()['full_name']) {
+              <small class="field-error">
+                {{ fieldErrors()['full_name'] }}
+              </small>
+            }
+          </div>
+
+          <!-- Phone Number -->
+          <div class="form-field">
+            <ion-input
+              label="Phone Number *"
+              labelPlacement="stacked"
+              fill="outline"
+              type="tel"
+              inputmode="numeric"
+              placeholder="09XXXXXXXXX"
+              formControlName="phone"
+              [maxlength]="11"
+              (ionInput)="onPhoneInput($event)"
+            ></ion-input>
+
+            @if (
+              form.controls.phone.touched &&
+              form.controls.phone.invalid
+            ) {
+              <small class="field-error">
+                Phone number must be exactly 11 digits
+                and start with 09.
+              </small>
+            }
+
+            @if (fieldErrors()['phone']) {
+              <small class="field-error">
+                {{ fieldErrors()['phone'] }}
+              </small>
+            }
+          </div>
+
+          <!-- Birth Date -->
+          <div class="form-field">
+            <ion-input
+              label="Birth Date"
+              labelPlacement="stacked"
+              fill="outline"
+              type="date"
+              formControlName="birth_date"
+            ></ion-input>
+
+            @if (fieldErrors()['birth_date']) {
+              <small class="field-error">
+                {{ fieldErrors()['birth_date'] }}
+              </small>
+            }
+          </div>
+
+          <!-- Address -->
+          <div class="form-field">
+            <ion-textarea
+              label="Address"
+              labelPlacement="stacked"
+              fill="outline"
+              placeholder="Enter complete address"
+              formControlName="address"
+              [autoGrow]="true"
+              [rows]="3"
+              [maxlength]="255"
+            ></ion-textarea>
+
+            @if (fieldErrors()['address']) {
+              <small class="field-error">
+                {{ fieldErrors()['address'] }}
+              </small>
+            }
+          </div>
+
+        </section>
+
+        <!-- Duplicate Phone Confirmation -->
+        @if (needsPhoneConfirmation()) {
+          <section class="confirmation-card">
+            <h3>Phone Number Already Exists</h3>
+
+            <p>
+              Another patient already uses this phone number.
+              Please verify that the information is correct
+              before continuing.
+            </p>
+
+            <ion-button
+              type="button"
+              expand="block"
+              color="warning"
+              [disabled]="saving() || form.invalid"
+              (click)="savePatient(true)"
+            >
+              Confirm and Save Anyway
+            </ion-button>
+          </section>
+        }
+
+        <!-- Action Buttons -->
+        <div class="actions">
+          <ion-button
+            type="submit"
+            expand="block"
+            [disabled]="saving() || form.invalid"
+          >
+            @if (saving()) {
+              <ion-spinner
+                slot="start"
+                name="crescent"
+              ></ion-spinner>
+              Saving...
+            } @else {
+              <ion-icon
+                slot="start"
+                name="save-outline"
+              ></ion-icon>
+              Save Changes
+            }
+          </ion-button>
+
+          <ion-button
+            type="button"
+            expand="block"
+            fill="outline"
+            [disabled]="saving()"
+            [routerLink]="['/patients', patientId()]"
+          >
+            Cancel
+          </ion-button>
+        </div>
+      </form>
+
+    }
+
+  </div>
+</ion-content>

@@ -1,0 +1,374 @@
+
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-title>Sales Reports</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+  <div class="reports-container">
+
+    <!-- PAGE HEADER -->
+    <div class="page-header">
+      <div>
+        <h1>Sales Reports Dashboard</h1>
+        <p>Monitor sales performance, collections, and products.</p>
+      </div>
+
+      <ion-button routerLink="/sales" fill="outline">
+        <ion-icon slot="start" name="arrow-back-outline"></ion-icon>
+        Back to Sales
+      </ion-button>
+    </div>
+
+    <!-- REPORT FILTERS -->
+    <div class="filter-panel">
+
+      <div class="filter-field">
+        <label for="report-period">Reporting Period</label>
+
+        <select
+          id="report-period"
+          [(ngModel)]="period"
+          (ngModelChange)="changePeriod()">
+
+          <option
+            *ngFor="let option of periods"
+            [value]="option.value">
+            {{ option.label }}
+          </option>
+
+        </select>
+      </div>
+
+      <!-- CUSTOM DATE FILTER -->
+      <ng-container *ngIf="period === 'custom'">
+
+        <div class="filter-field">
+          <label for="start-date">Start Date</label>
+
+          <input
+            id="start-date"
+            type="date"
+            [(ngModel)]="startDate" />
+        </div>
+
+        <div class="filter-field">
+          <label for="end-date">End Date</label>
+
+          <input
+            id="end-date"
+            type="date"
+            [(ngModel)]="endDate" />
+        </div>
+
+      </ng-container>
+
+      <!-- GENERATE REPORT -->
+      <ion-button
+        [disabled]="loading()"
+        (click)="loadReports()">
+
+        <ion-icon
+          slot="start"
+          name="refresh-outline">
+        </ion-icon>
+
+        Generate Report
+      </ion-button>
+
+      <!-- PRINT SALES REPORT -->
+      <ion-button
+        color="success"
+        fill="outline"
+        [disabled]="loading() || !report()"
+        (click)="printReport()">
+
+        <ion-icon
+          slot="start"
+          name="print-outline">
+        </ion-icon>
+
+        Print Report
+      </ion-button>
+
+      <!-- EXPORT CSV -->
+      <ion-button
+        color="primary"
+        fill="outline"
+        [disabled]="loading() || !report()"
+        (click)="exportCSV()">
+
+        <ion-icon
+          slot="start"
+          name="download-outline">
+        </ion-icon>
+
+        Export CSV
+      </ion-button>
+
+    </div>
+
+    <!-- LOADING STATE -->
+    <div class="state" *ngIf="loading()">
+      <ion-spinner name="crescent"></ion-spinner>
+      <p>Loading sales reports...</p>
+    </div>
+
+    <!-- ERROR STATE -->
+    <div class="state error" *ngIf="error()">
+      <ion-icon name="alert-circle-outline"></ion-icon>
+      <p>{{ error() }}</p>
+    </div>
+
+    <!-- REPORT CONTENT -->
+    <ng-container *ngIf="report() as data">
+
+      <!-- REPORT DATE RANGE -->
+      <div class="report-range">
+        Report Period:
+        {{ data.start_date }}
+        to
+        {{ data.end_date }}
+      </div>
+
+      <!-- SUMMARY CARDS -->
+      <div class="summary-grid">
+
+        <!-- TOTAL SALES -->
+        <div class="summary-card">
+          <div class="card-heading">
+            <span>Total Sales</span>
+            <ion-icon name="stats-chart-outline"></ion-icon>
+          </div>
+
+          <h2>{{ money(data.summary.total_sales) }}</h2>
+          <p>Completed sales in selected period</p>
+        </div>
+
+        <!-- TOTAL COLLECTIONS -->
+        <div class="summary-card">
+          <div class="card-heading">
+            <span>Total Collections</span>
+            <ion-icon name="cash-outline"></ion-icon>
+          </div>
+
+          <h2>{{ money(data.summary.total_collections) }}</h2>
+          <p>Payments received during selected period</p>
+        </div>
+
+        <!-- OUTSTANDING BALANCE -->
+        <div class="summary-card">
+          <div class="card-heading">
+            <span>Outstanding Balance</span>
+            <ion-icon name="wallet-outline"></ion-icon>
+          </div>
+
+          <h2>{{ money(data.summary.outstanding_balance) }}</h2>
+          <p>Current balance of sales in selected period</p>
+        </div>
+
+        <!-- TOTAL TRANSACTIONS -->
+        <div class="summary-card">
+          <div class="card-heading">
+            <span>Total Transactions</span>
+            <ion-icon name="receipt-outline"></ion-icon>
+          </div>
+
+          <h2>{{ number(data.summary.total_transactions) }}</h2>
+          <p>Completed transactions</p>
+        </div>
+
+      </div>
+
+      <!-- REPORTS GRID -->
+      <div class="reports-grid">
+
+        <!-- SALES PERFORMANCE CHART -->
+        <section class="report-card chart-card">
+
+          <h2>Sales Performance</h2>
+
+          <p class="section-description">
+            Sales by {{ data.period === 'year' ? 'month' : 'day' }}
+          </p>
+
+          <!-- EMPTY CHART -->
+          <div
+            class="chart-empty"
+            *ngIf="!chartRows.length">
+
+            No sales data for this period.
+          </div>
+
+          <!-- BAR CHART -->
+          <div
+            class="chart-scroll"
+            *ngIf="chartRows.length">
+
+            <div class="bar-chart">
+
+              <div
+                class="bar-column"
+                *ngFor="let item of chartRows">
+
+                <div class="bar-value">
+                  {{ money(item.sales) }}
+                </div>
+
+                <div class="bar-track">
+                  <div
+                    class="bar-fill"
+                    [style.height.%]="barHeight(item.sales)">
+                  </div>
+                </div>
+
+                <div class="bar-label">
+                  {{ item.label }}
+                </div>
+
+              </div>
+
+            </div>
+          </div>
+
+        </section>
+
+        <!-- PAYMENT STATUS AND METHODS -->
+        <section class="report-card">
+
+          <h2>Payment Status</h2>
+
+          <p class="section-description">
+            Completed sales created in selected period
+          </p>
+
+          <div class="status-list">
+
+            <!-- PAID -->
+            <div class="status-item">
+              <span class="status-dot paid"></span>
+              <span>Paid</span>
+              <strong>{{ data.summary.paid_sales }}</strong>
+            </div>
+
+            <!-- PARTIAL -->
+            <div class="status-item">
+              <span class="status-dot partial"></span>
+              <span>Partial</span>
+              <strong>{{ data.summary.partial_sales }}</strong>
+            </div>
+
+            <!-- UNPAID -->
+            <div class="status-item">
+              <span class="status-dot unpaid"></span>
+              <span>Unpaid</span>
+              <strong>{{ data.summary.unpaid_sales }}</strong>
+            </div>
+
+          </div>
+
+          <!-- PAYMENT METHODS -->
+          <h2 class="subheading">Payment Methods</h2>
+
+          <div
+            class="empty-text"
+            *ngIf="!data.payment_methods.length">
+
+            No payments recorded in this period.
+          </div>
+
+          <div
+            class="method-row"
+            *ngFor="let method of data.payment_methods">
+
+            <span>{{ method.payment_method }}</span>
+
+            <strong>
+              {{ money(method.total_amount) }}
+            </strong>
+
+          </div>
+
+        </section>
+
+      </div>
+
+      <!-- BEST SELLING PRODUCTS -->
+      <section class="report-card products-card">
+
+        <div class="products-heading">
+          <div>
+
+            <h2>
+              <ion-icon name="trophy-outline"></ion-icon>
+              Best-Selling Products
+            </h2>
+
+            <p class="section-description">
+              Top 10 products by quantity sold
+            </p>
+
+          </div>
+        </div>
+
+        <!-- EMPTY PRODUCTS -->
+        <div
+          class="empty-text"
+          *ngIf="!data.top_products.length">
+
+          No products sold in this period.
+        </div>
+
+        <!-- PRODUCT LIST -->
+        <div
+          class="product-row"
+          *ngFor="let product of data.top_products; let i = index">
+
+          <!-- PRODUCT RANK -->
+          <div class="product-rank">
+            {{ i + 1 }}
+          </div>
+
+          <!-- PRODUCT INFORMATION -->
+          <div class="product-info">
+
+            <strong>
+              {{ product.product_name }}
+            </strong>
+
+            <span>
+              {{ product.category }}
+            </span>
+
+            <!-- PRODUCT BAR -->
+            <div class="product-track">
+              <div
+                class="product-fill"
+                [style.width.%]="productWidth(product.quantity_sold)">
+              </div>
+            </div>
+
+          </div>
+
+          <!-- PRODUCT SALES -->
+          <div class="product-numbers">
+
+            <strong>
+              {{ number(product.quantity_sold) }} sold
+            </strong>
+
+            <span>
+              {{ money(product.total_revenue) }}
+            </span>
+
+          </div>
+
+        </div>
+
+      </section>
+
+    </ng-container>
+
+  </div>
+</ion-content>

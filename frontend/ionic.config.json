@@ -1,0 +1,7 @@
+{
+  "name": "optimum-vision-optical",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "angular-standalone"
+}

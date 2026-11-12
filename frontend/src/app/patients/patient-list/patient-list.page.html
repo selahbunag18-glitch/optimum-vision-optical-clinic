@@ -1,0 +1,223 @@
+
+<ion-header class="ion-no-border">
+  <ion-toolbar class="bar">
+    <ion-buttons slot="start">
+      <ion-button
+        [routerLink]="homeHref()"
+        aria-label="Back to dashboard"
+      >
+        <ion-icon
+          slot="icon-only"
+          name="arrow-back-outline"
+        ></ion-icon>
+      </ion-button>
+    </ion-buttons>
+
+    <ion-title>Patient Management</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="page-content">
+  <ion-refresher
+    slot="fixed"
+    (ionRefresh)="refresh($event)"
+  >
+    <ion-refresher-content></ion-refresher-content>
+  </ion-refresher>
+
+  <div class="wrap">
+
+    <!-- Page heading -->
+    <section class="summary">
+      <div class="summary-icon">
+        <ion-icon name="people-outline"></ion-icon>
+      </div>
+
+      <div>
+        <h1>Patients</h1>
+
+        <p>
+          @if (pagination(); as p) {
+            {{ p.total }}
+            {{ p.total === 1 ? 'patient' : 'patients' }}
+
+            @if (search() !== '') {
+              matching "{{ search() }}"
+            }
+          } @else {
+            Clinic patient records
+          }
+        </p>
+      </div>
+
+      <ion-button
+        fill="clear"
+        class="refresh-btn"
+        aria-label="Refresh list"
+        (click)="retry()"
+        [disabled]="loading()"
+      >
+        <ion-icon
+          slot="icon-only"
+          name="refresh-outline"
+        ></ion-icon>
+      </ion-button>
+    </section>
+
+    <!-- Search -->
+    <ion-searchbar
+      class="search"
+      placeholder="Search by name, email or phone"
+      [debounce]="350"
+      [value]="search()"
+      (ionInput)="onSearch($event)"
+      (ionClear)="onSearch($any($event))"
+    ></ion-searchbar>
+
+    <!-- Loading -->
+    @if (loading()) {
+      <div class="state">
+        <ion-spinner name="crescent"></ion-spinner>
+        <p>Loading patients...</p>
+      </div>
+    }
+
+    <!-- Error -->
+    @else if (error()) {
+      <div class="state state-error" role="alert">
+        <ion-icon name="alert-circle-outline"></ion-icon>
+
+        <h2>Could not load patients</h2>
+        <p>{{ error() }}</p>
+
+        <ion-button
+          class="primary"
+          (click)="retry()"
+        >
+          Try again
+        </ion-button>
+      </div>
+    }
+
+    <!-- Empty state -->
+    @else if (patients().length === 0) {
+      <div class="state">
+        <ion-icon name="people-outline"></ion-icon>
+
+        @if (search() !== '') {
+          <h2>No matching patients</h2>
+          <p>
+            No patients match "{{ search() }}".
+            Try another name, email or phone number.
+          </p>
+        } @else {
+          <h2>No patients yet</h2>
+          <p>
+            Registered patients and walk-in
+            customers will appear here.
+          </p>
+        }
+      </div>
+    }
+
+    <!-- Patient list -->
+    @else {
+      <ul class="grid">
+        @for (patient of patients(); track patient.id) {
+          <li class="card">
+
+            <div class="card-top">
+              <div class="avatar">
+                {{ patient.full_name.charAt(0).toUpperCase() }}
+              </div>
+
+              <div class="who">
+                <h2>{{ patient.full_name }}</h2>
+                <span class="pid">
+                  Patient ID #{{ patient.id }}
+                </span>
+              </div>
+
+              @if (!patient.is_active) {
+                <span class="badge">Inactive</span>
+              }
+            </div>
+
+            <dl class="info">
+              <div>
+                <ion-icon name="mail-outline"></ion-icon>
+                <dt class="sr">Email</dt>
+                <dd>{{ patient.email }}</dd>
+              </div>
+
+              <div>
+                <ion-icon name="call-outline"></ion-icon>
+                <dt class="sr">Phone</dt>
+                <dd>
+                  {{ patient.phone || 'No phone number' }}
+                </dd>
+              </div>
+
+              <div>
+                <ion-icon name="calendar-outline"></ion-icon>
+                <dt class="sr">Registered</dt>
+                <dd>
+                  {{ formatDate(patient.created_at) }}
+                </dd>
+              </div>
+            </dl>
+
+            <!-- Actions -->
+            <div class="actions">
+              <ion-button
+                fill="outline"
+                size="small"
+                class="btn-view"
+                [routerLink]="['/patients', patient.id]"
+              >
+                <ion-icon
+                  slot="start"
+                  name="eye-outline"
+                ></ion-icon>
+                View
+              </ion-button>
+
+              <ion-button
+                fill="clear"
+                size="small"
+                class="btn-edit"
+                [routerLink]="['/patients', patient.id, 'edit']"
+              >
+                <ion-icon
+                  slot="start"
+                  name="create-outline"
+                ></ion-icon>
+                Edit
+              </ion-button>
+            </div>
+
+          </li>
+        }
+      </ul>
+
+      <!-- Pagination -->
+      @if (hasMore()) {
+        <div class="more">
+          <ion-button
+            fill="outline"
+            class="btn-view"
+            (click)="loadMore()"
+            [disabled]="loadingMore()"
+          >
+            @if (loadingMore()) {
+              <ion-spinner name="crescent"></ion-spinner>
+            } @else {
+              Load More
+            }
+          </ion-button>
+        </div>
+      }
+    }
+
+  </div>
+</ion-content>

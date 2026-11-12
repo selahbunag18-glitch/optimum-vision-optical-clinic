@@ -1,0 +1,190 @@
+
+<ion-header>
+  <ion-toolbar color="primary">
+
+    <ion-buttons slot="start">
+      <ion-button (click)="goBack()">
+        <ion-icon
+          slot="icon-only"
+          name="arrow-back-outline">
+        </ion-icon>
+      </ion-button>
+    </ion-buttons>
+
+    <ion-title>Stock In</ion-title>
+
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+
+  <div class="stock-container">
+
+    <div class="page-header">
+      <div class="header-icon">
+        <ion-icon name="cube-outline"></ion-icon>
+      </div>
+
+      <div>
+        <h1>Receive New Stock</h1>
+        <p>
+          Record new optical product deliveries.
+        </p>
+      </div>
+    </div>
+
+    <div class="loading-state" *ngIf="loading()">
+      <ion-spinner name="crescent"></ion-spinner>
+      <p>Loading products...</p>
+    </div>
+
+    <div
+      class="message error-message"
+      *ngIf="errorMessage()">
+      {{ errorMessage() }}
+    </div>
+
+    <ion-card *ngIf="!loading()">
+      <ion-card-content>
+
+        <form (ngSubmit)="saveStockIn()">
+
+          <h2>Delivery Information</h2>
+
+          <div class="form-grid">
+
+            <ion-select
+              class="full-width"
+              label="Select Product *"
+              labelPlacement="stacked"
+              fill="outline"
+              interface="popover"
+              name="productId"
+              [(ngModel)]="productId"
+              (ionChange)="onProductChange()"
+              [disabled]="saving()"
+              required>
+
+              <ion-select-option
+                *ngFor="let product of products()"
+                [value]="product.id">
+                {{ product.product_name }}
+                — {{ product.category }}
+              </ion-select-option>
+
+            </ion-select>
+
+            <ion-input
+              label="Batch Number *"
+              labelPlacement="stacked"
+              fill="outline"
+              name="batchNumber"
+              [(ngModel)]="batchNumber"
+              [disabled]="saving()"
+              placeholder="Example: ED-2026-001"
+              required>
+            </ion-input>
+
+            <ion-input
+              label="Quantity Received *"
+              labelPlacement="stacked"
+              fill="outline"
+              type="number"
+              min="1"
+              step="1"
+              name="quantity"
+              [(ngModel)]="quantity"
+              [disabled]="saving()"
+              required>
+            </ion-input>
+
+            <ion-input
+              label="Date Received *"
+              labelPlacement="stacked"
+              fill="outline"
+              type="date"
+              name="dateReceived"
+              [(ngModel)]="dateReceived"
+              [disabled]="saving()"
+              required>
+            </ion-input>
+
+            <ion-input
+              label="Expiration Date"
+              labelPlacement="stacked"
+              fill="outline"
+              type="date"
+              name="expirationDate"
+              [(ngModel)]="expirationDate"
+              [disabled]="saving() || disallowsExpiration"
+              [required]="requiresExpiration">
+            </ion-input>
+
+          </div>
+
+          <ion-note *ngIf="requiresExpiration">
+            Expiration date is required for
+            Contact Lenses and Eyedrops.
+          </ion-note>
+
+          <ion-note *ngIf="disallowsExpiration">
+            This product category does not
+            require an expiration date.
+          </ion-note>
+
+          <ion-note
+            *ngIf="
+              selectedCategory &&
+              !requiresExpiration &&
+              !disallowsExpiration
+            ">
+            Expiration date is optional for
+            this product category.
+          </ion-note>
+
+          <div
+            class="message success-message"
+            *ngIf="successMessage()">
+            {{ successMessage() }}
+          </div>
+
+          <div class="form-actions">
+
+            <ion-button
+              type="button"
+              fill="outline"
+              color="medium"
+              [disabled]="saving()"
+              (click)="goBack()">
+              Cancel
+            </ion-button>
+
+            <ion-button
+              type="submit"
+              [disabled]="saving() || loading()">
+
+              <ion-spinner
+                *ngIf="saving()"
+                name="crescent">
+              </ion-spinner>
+
+              <ion-icon
+                *ngIf="!saving()"
+                slot="start"
+                name="save-outline">
+              </ion-icon>
+
+              {{ saving() ? 'Saving...' : 'Save Stock In' }}
+
+            </ion-button>
+
+          </div>
+
+        </form>
+
+      </ion-card-content>
+    </ion-card>
+
+  </div>
+
+</ion-content>

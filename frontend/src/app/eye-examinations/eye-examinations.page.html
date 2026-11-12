@@ -1,0 +1,598 @@
+
+<ion-header class="ion-no-border">
+  <ion-toolbar class="eye-toolbar">
+    <ion-buttons slot="start">
+      <ion-button
+        [routerLink]="['/patients', patientId()]"
+        aria-label="Back to Patient Details"
+      >
+        <ion-icon
+          slot="icon-only"
+          name="arrow-back-outline"
+        ></ion-icon>
+      </ion-button>
+    </ion-buttons>
+
+    <ion-title>Eye Examination & Prescription</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="eye-content">
+
+  <div class="eye-wrap">
+
+    <!-- Page Header -->
+    <div class="page-heading">
+      <div>
+        <p class="eyebrow">OPTIMUM VISION OPTICAL CLINIC</p>
+
+        <h1>Eye Examination & Prescription</h1>
+
+        <p class="subtitle">
+          Manage eye examination records and eyeglass prescriptions.
+        </p>
+      </div>
+
+      <span class="patient-badge">
+        Patient #{{ patientId() }}
+      </span>
+    </div>
+
+    <!-- Alerts -->
+    @if (error()) {
+      <div class="alert alert-error" role="alert">
+        {{ error() }}
+      </div>
+    }
+
+    @if (message()) {
+      <div class="alert alert-success" role="status">
+        <ion-icon name="checkmark-circle-outline"></ion-icon>
+        {{ message() }}
+      </div>
+    }
+
+    <!-- Examination History -->
+    @if (mode() === 'list') {
+
+      <div class="section-top">
+        <div>
+          <h2>Examination History</h2>
+          <p>View and manage recorded eye examinations.</p>
+        </div>
+
+        <div class="top-actions">
+          <ion-button
+            fill="outline"
+            [disabled]="loading()"
+            (click)="load()"
+          >
+            <ion-icon
+              slot="start"
+              name="refresh-outline"
+            ></ion-icon>
+            Refresh
+          </ion-button>
+
+          <ion-button
+            [disabled]="loading()"
+            (click)="newExamination()"
+          >
+            <ion-icon
+              slot="start"
+              name="add-outline"
+            ></ion-icon>
+            New Examination
+          </ion-button>
+        </div>
+      </div>
+
+      @if (loading()) {
+        <div class="loading-state">
+          <ion-spinner name="crescent"></ion-spinner>
+          <p>Loading examination records...</p>
+        </div>
+      } @else {
+
+        <div class="exam-list">
+          @for (exam of examinations(); track exam.id) {
+            <section class="exam-card">
+
+              <div class="exam-card-top">
+                <div class="exam-symbol">
+                  <ion-icon name="eye-outline"></ion-icon>
+                </div>
+
+                <div class="exam-heading">
+                  <h3>Examination #{{ exam.id }}</h3>
+                  <p>
+                    <ion-icon name="calendar-outline"></ion-icon>
+                    {{ exam.examination_date }}
+                  </p>
+                </div>
+
+                <span class="record-badge">
+                  Recorded
+                </span>
+              </div>
+
+              <div class="exam-details">
+                <div>
+                  <span>Chief Complaint</span>
+                  <p>{{ exam.chief_complaint || 'Not provided' }}</p>
+                </div>
+
+                <div>
+                  <span>Visual Acuity — OD</span>
+                  <p>{{ exam.visual_acuity_od || 'Not recorded' }}</p>
+                </div>
+
+                <div>
+                  <span>Visual Acuity — OS</span>
+                  <p>{{ exam.visual_acuity_os || 'Not recorded' }}</p>
+                </div>
+
+                <div>
+                  <span>Findings</span>
+                  <p>{{ exam.findings || 'Not recorded' }}</p>
+                </div>
+              </div>
+
+              <div class="card-actions">
+                <ion-button
+                  fill="outline"
+                  size="small"
+                  (click)="editExamination(exam)"
+                >
+                  <ion-icon
+                    slot="start"
+                    name="create-outline"
+                  ></ion-icon>
+                  Edit Examination
+                </ion-button>
+
+                <ion-button
+                  size="small"
+                  [disabled]="opening()"
+                  (click)="openPrescription(exam)"
+                >
+                  <ion-icon
+                    slot="start"
+                    name="document-text-outline"
+                  ></ion-icon>
+                  Prescription
+                </ion-button>
+              </div>
+
+            </section>
+          } @empty {
+            <div class="empty-state">
+              <ion-icon name="eye-outline"></ion-icon>
+              <h3>No Examination Records</h3>
+              <p>
+                This patient has no recorded eye examinations yet.
+              </p>
+
+              <ion-button (click)="newExamination()">
+                <ion-icon
+                  slot="start"
+                  name="add-outline"
+                ></ion-icon>
+                Add First Examination
+              </ion-button>
+            </div>
+          }
+        </div>
+      }
+    }
+
+    <!-- Add / Edit Examination -->
+    @if (mode() === 'exam') {
+
+      <section class="form-card">
+        <div class="form-header">
+          <p class="eyebrow">CLINICAL RECORD</p>
+          <h2>
+            {{ examinationId ? 'Edit Examination' : 'New Eye Examination' }}
+          </h2>
+          <p>
+            Enter the examination details for Patient #{{ patientId() }}.
+          </p>
+        </div>
+
+        <div class="form-body">
+
+          <div class="form-group">
+            <ion-input
+              label="Examination Date"
+              labelPlacement="stacked"
+              type="date"
+              fill="outline"
+              [(ngModel)]="examinationDate"
+            ></ion-input>
+          </div>
+
+          <div class="form-group">
+            <ion-textarea
+              label="Chief Complaint"
+              labelPlacement="stacked"
+              fill="outline"
+              [autoGrow]="true"
+              [rows]="3"
+              [(ngModel)]="chiefComplaint"
+            ></ion-textarea>
+          </div>
+
+          <h3 class="form-section-title">Visual Acuity</h3>
+
+          <div class="form-grid">
+            <ion-input
+              label="Right Eye (OD)"
+              labelPlacement="stacked"
+              fill="outline"
+              placeholder="e.g. 20/20"
+              [(ngModel)]="visualAcuityOd"
+            ></ion-input>
+
+            <ion-input
+              label="Left Eye (OS)"
+              labelPlacement="stacked"
+              fill="outline"
+              placeholder="e.g. 20/20"
+              [(ngModel)]="visualAcuityOs"
+            ></ion-input>
+          </div>
+
+          <div class="form-group">
+            <ion-textarea
+              label="Examination Findings"
+              labelPlacement="stacked"
+              fill="outline"
+              [autoGrow]="true"
+              [rows]="3"
+              [(ngModel)]="findings"
+            ></ion-textarea>
+          </div>
+
+          <div class="form-group">
+            <ion-textarea
+              label="Remarks"
+              labelPlacement="stacked"
+              fill="outline"
+              [autoGrow]="true"
+              [rows]="3"
+              [(ngModel)]="remarks"
+            ></ion-textarea>
+          </div>
+
+          <div class="form-actions">
+            <ion-button
+              [disabled]="saving()"
+              (click)="saveExamination()"
+            >
+              @if (saving()) {
+                <ion-spinner
+                  slot="start"
+                  name="crescent"
+                ></ion-spinner>
+              } @else {
+                <ion-icon
+                  slot="start"
+                  name="save-outline"
+                ></ion-icon>
+              }
+
+              {{ saving() ? 'Saving...' : 'Save Examination' }}
+            </ion-button>
+
+            <ion-button
+              fill="outline"
+              [disabled]="saving()"
+              (click)="backToList()"
+            >
+              Cancel
+            </ion-button>
+          </div>
+
+        </div>
+      </section>
+    }
+
+    <!-- Prescription Form -->
+    @if (mode() === 'prescription') {
+
+      <section class="form-card">
+
+        <div class="form-header">
+          <p class="eyebrow">OPTICAL PRESCRIPTION</p>
+          <h2>Eyeglass Prescription</h2>
+
+          <p>
+            Examination #{{ selected()?.id }} —
+            {{ selected()?.examination_date }}
+          </p>
+        </div>
+
+        <div class="form-body">
+
+          <div class="eye-section">
+            <div class="eye-section-heading">
+              <span class="eye-tag">OD</span>
+              <div>
+                <h3>Right Eye</h3>
+                <p>Oculus Dexter</p>
+              </div>
+            </div>
+
+            <div class="rx-grid">
+              <ion-input
+                label="SPH"
+                labelPlacement="stacked"
+                type="number"
+                fill="outline"
+                placeholder="-1.50"
+                [(ngModel)]="prescription['od_sph']"
+              ></ion-input>
+
+              <ion-input
+                label="CYL"
+                labelPlacement="stacked"
+                type="number"
+                fill="outline"
+                placeholder="-0.50"
+                [(ngModel)]="prescription['od_cyl']"
+              ></ion-input>
+
+              <ion-input
+                label="AXIS (0–180)"
+                labelPlacement="stacked"
+                type="number"
+                fill="outline"
+                min="0"
+                max="180"
+                [(ngModel)]="prescription['od_axis']"
+              ></ion-input>
+
+              <ion-input
+                label="ADD"
+                labelPlacement="stacked"
+                type="number"
+                fill="outline"
+                [(ngModel)]="prescription['od_add']"
+              ></ion-input>
+            </div>
+          </div>
+
+          <div class="eye-section">
+            <div class="eye-section-heading">
+              <span class="eye-tag left">OS</span>
+              <div>
+                <h3>Left Eye</h3>
+                <p>Oculus Sinister</p>
+              </div>
+            </div>
+
+            <div class="rx-grid">
+              <ion-input
+                label="SPH"
+                labelPlacement="stacked"
+                type="number"
+                fill="outline"
+                placeholder="-1.00"
+                [(ngModel)]="prescription['os_sph']"
+              ></ion-input>
+
+              <ion-input
+                label="CYL"
+                labelPlacement="stacked"
+                type="number"
+                fill="outline"
+                placeholder="-0.75"
+                [(ngModel)]="prescription['os_cyl']"
+              ></ion-input>
+
+              <ion-input
+                label="AXIS (0–180)"
+                labelPlacement="stacked"
+                type="number"
+                fill="outline"
+                min="0"
+                max="180"
+                [(ngModel)]="prescription['os_axis']"
+              ></ion-input>
+
+              <ion-input
+                label="ADD"
+                labelPlacement="stacked"
+                type="number"
+                fill="outline"
+                [(ngModel)]="prescription['os_add']"
+              ></ion-input>
+            </div>
+          </div>
+
+          <h3 class="form-section-title">Additional Details</h3>
+
+          <div class="form-grid">
+            <ion-input
+              label="Pupillary Distance (PD, mm)"
+              labelPlacement="stacked"
+              type="number"
+              fill="outline"
+              [(ngModel)]="prescription['pd']"
+            ></ion-input>
+
+            <ion-input
+              label="Lens Type"
+              labelPlacement="stacked"
+              fill="outline"
+              placeholder="e.g. Single Vision"
+              [(ngModel)]="prescription['lens_type']"
+            ></ion-input>
+          </div>
+
+          <div class="form-group">
+            <ion-textarea
+              label="Prescription Notes"
+              labelPlacement="stacked"
+              fill="outline"
+              [autoGrow]="true"
+              [rows]="3"
+              [(ngModel)]="prescription['prescription_notes']"
+            ></ion-textarea>
+          </div>
+
+          <div class="form-actions">
+            <ion-button
+              [disabled]="saving()"
+              (click)="savePrescription()"
+            >
+              @if (saving()) {
+                <ion-spinner
+                  slot="start"
+                  name="crescent"
+                ></ion-spinner>
+              } @else {
+                <ion-icon
+                  slot="start"
+                  name="save-outline"
+                ></ion-icon>
+              }
+
+              {{ saving() ? 'Saving...' : 'Save Prescription' }}
+            </ion-button>
+
+            @if (selected()?.prescription) {
+              <ion-button
+                fill="outline"
+                [disabled]="saving()"
+                (click)="printPrescription()"
+              >
+                <ion-icon
+                  slot="start"
+                  name="print-outline"
+                ></ion-icon>
+                Print Saved Prescription
+              </ion-button>
+            }
+
+            <ion-button
+              fill="clear"
+              [disabled]="saving()"
+              (click)="backToList()"
+            >
+              Back to History
+            </ion-button>
+          </div>
+
+          @if (selected()?.prescription) {
+            <p class="saved-note">
+              <ion-icon
+                name="checkmark-circle-outline"
+              ></ion-icon>
+              A saved prescription is available for printing.
+              Save again after making changes.
+            </p>
+          }
+
+        </div>
+      </section>
+
+      <!-- Printable Prescription -->
+      @if (selected(); as exam) {
+        @if (exam.prescription; as rx) {
+          <section class="print-area">
+
+            <div class="print-header">
+              <h1>OPTIMUM VISION</h1>
+              <p>OPTICAL CLINIC</p>
+              <h2>EYEGLASS PRESCRIPTION</h2>
+            </div>
+
+            <div class="print-info">
+              <div>
+                <strong>Patient:</strong>
+                {{ exam.patient_name || ('Patient #' + exam.patient_id) }}
+              </div>
+
+              <div>
+                <strong>Patient ID:</strong>
+                {{ exam.patient_id }}
+              </div>
+
+              <div>
+                <strong>Examination Date:</strong>
+                {{ exam.examination_date }}
+              </div>
+
+              <div>
+                <strong>Examination No.:</strong>
+                {{ exam.id }}
+              </div>
+            </div>
+
+            <table class="print-table">
+              <thead>
+                <tr>
+                  <th>Eye</th>
+                  <th>SPH</th>
+                  <th>CYL</th>
+                  <th>AXIS</th>
+                  <th>ADD</th>
+                </tr>
+              </thead>
+
+              <tbody>
+                <tr>
+                  <td><strong>OD</strong></td>
+                  <td>{{ rx.od_sph ?? '-' }}</td>
+                  <td>{{ rx.od_cyl ?? '-' }}</td>
+                  <td>{{ rx.od_axis ?? '-' }}</td>
+                  <td>{{ rx.od_add ?? '-' }}</td>
+                </tr>
+
+                <tr>
+                  <td><strong>OS</strong></td>
+                  <td>{{ rx.os_sph ?? '-' }}</td>
+                  <td>{{ rx.os_cyl ?? '-' }}</td>
+                  <td>{{ rx.os_axis ?? '-' }}</td>
+                  <td>{{ rx.os_add ?? '-' }}</td>
+                </tr>
+              </tbody>
+            </table>
+
+            <div class="print-extra">
+              <p>
+                <strong>PD:</strong>
+                {{ rx.pd ?? '-' }} mm
+              </p>
+
+              <p>
+                <strong>Lens Type:</strong>
+                {{ rx.lens_type || 'Not specified' }}
+              </p>
+
+              <p>
+                <strong>Prescription Notes:</strong>
+                {{ rx.prescription_notes || 'None' }}
+              </p>
+            </div>
+
+            <div class="print-signature">
+              <div class="signature-line"></div>
+              <strong>Licensed Eye-Care Professional</strong>
+              <p>Signature / Printed Name / License No.</p>
+            </div>
+
+            <div class="print-footer">
+              Optimum Vision Optical Clinic
+            </div>
+
+          </section>
+        }
+      }
+    }
+
+  </div>
+
+</ion-content>

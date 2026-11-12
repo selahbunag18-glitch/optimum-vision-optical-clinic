@@ -1,0 +1,325 @@
+<ion-header>
+  <ion-toolbar color="primary">
+
+    <ion-buttons slot="start">
+      <ion-button
+        [routerLink]="dashboardRoute()"
+        (click)="blurActiveElement()"
+        class="back-button"
+        aria-label="Back to Dashboard">
+        <ion-icon
+          slot="icon-only"
+          name="arrow-back-outline">
+        </ion-icon>
+      </ion-button>
+    </ion-buttons>
+
+    <ion-title>Inventory Monitoring</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+
+  <div class="batch-container">
+
+    <!-- PAGE HEADER -->
+    <div class="page-header">
+      <div>
+        <h1>Stock Batch</h1>
+        <p>
+          Monitor new arrivals, upcoming expirations,
+          expired products, and stock history.
+        </p>
+      </div>
+
+      <!-- HEADER ACTIONS -->
+      <div class="header-actions">
+
+        <!-- BACK TO INVENTORY -->
+        <ion-button
+          fill="outline"
+          routerLink="/inventory"
+          (click)="blurActiveElement()">
+
+          <ion-icon
+            slot="start"
+            name="arrow-back-outline">
+          </ion-icon>
+
+          Inventory
+        </ion-button>
+
+        <!-- STOCK IN -->
+        <ion-button
+          routerLink="/inventory/stock-in"
+          (click)="blurActiveElement()">
+
+          <ion-icon
+            slot="start"
+            name="add-outline">
+          </ion-icon>
+
+          Stock In
+        </ion-button>
+
+        <!-- CHECK EXPIRED STOCK -->
+        <ion-button
+          color="warning"
+          [disabled]="processingExpiration() || loading()"
+          (click)="processExpiredStock()">
+
+          <ion-spinner
+            *ngIf="processingExpiration()"
+            name="crescent">
+          </ion-spinner>
+
+          <ng-container *ngIf="!processingExpiration()">
+            <ion-icon
+              slot="start"
+              name="shield-checkmark-outline">
+            </ion-icon>
+
+            Check Expired Stock
+          </ng-container>
+
+          <span *ngIf="processingExpiration()">
+            Processing...
+          </span>
+
+        </ion-button>
+
+      </div>
+    </div>
+
+    <!-- EXPIRATION SUCCESS MESSAGE -->
+    <div
+      class="expiration-message"
+      role="status"
+      *ngIf="expirationMessage()">
+
+      <ion-icon
+        name="shield-checkmark-outline">
+      </ion-icon>
+
+      <span>
+        {{ expirationMessage() }}
+      </span>
+
+    </div>
+
+    <!-- FILTER TABS -->
+    <div class="filter-tabs">
+
+      <ion-button
+        *ngFor="let filter of filters"
+        [disabled]="processingExpiration()"
+        [fill]="selectedFilter() === filter.value ? 'solid' : 'outline'"
+        (click)="selectFilter(filter.value)">
+
+        {{ filter.label }}
+
+      </ion-button>
+
+    </div>
+
+    <!-- SUMMARY -->
+    <ion-card class="summary-card">
+      <ion-card-content>
+
+        <div class="summary-content">
+
+          <ion-icon name="cube-outline"></ion-icon>
+
+          <div>
+            <h2>{{ batches().length }}</h2>
+            <p>Records in selected section</p>
+          </div>
+
+          <ion-button
+            fill="clear"
+            [disabled]="loading() || processingExpiration()"
+            (click)="loadBatches()">
+
+            <ion-icon
+              slot="start"
+              name="refresh-outline">
+            </ion-icon>
+
+            Refresh
+
+          </ion-button>
+
+        </div>
+
+      </ion-card-content>
+    </ion-card>
+
+    <!-- EXPIRATION PROCESSING RESULT -->
+    <ion-card
+      class="expiration-result-card"
+      *ngIf="expirationResult() as result">
+
+      <ion-card-content>
+
+        <h2>Expiration Processing Result</h2>
+
+        <div class="result-grid">
+
+          <div>
+            <p>Processed Batches</p>
+            <h3>{{ result.processed_batches }}</h3>
+          </div>
+
+          <div>
+            <p>Expired Units Deducted</p>
+            <h3>{{ result.total_expired_quantity }}</h3>
+          </div>
+
+        </div>
+
+      </ion-card-content>
+    </ion-card>
+
+    <!-- LOADING -->
+    <div
+      class="state"
+      *ngIf="loading() || processingExpiration()">
+
+      <ion-spinner name="crescent"></ion-spinner>
+
+      <p *ngIf="processingExpiration()">
+        Checking expired inventory batches...
+      </p>
+
+      <p *ngIf="loading() && !processingExpiration()">
+        Loading stock batches...
+      </p>
+
+    </div>
+
+    <!-- ERROR -->
+    <div
+      class="state error"
+      *ngIf="errorMessage()">
+
+      <ion-icon name="alert-circle-outline"></ion-icon>
+
+      <p>{{ errorMessage() }}</p>
+
+      <ion-button
+        fill="outline"
+        [disabled]="processingExpiration()"
+        (click)="loadBatches()">
+
+        Try Again
+
+      </ion-button>
+
+    </div>
+
+    <!-- BATCH CARDS -->
+    <div
+      class="batch-grid"
+      *ngIf="
+        !loading() &&
+        !processingExpiration() &&
+        !errorMessage()
+      ">
+
+      <ion-card
+        class="batch-card"
+        *ngFor="let batch of batches()">
+
+        <ion-card-content>
+
+          <div class="batch-heading">
+
+            <div>
+              <h2>{{ batch.product_name }}</h2>
+              <p>{{ batch.brand || 'No Brand' }}</p>
+            </div>
+
+            <ion-chip
+              [color]="getStatusColor(batch)">
+
+              <ion-label>
+                {{ getStatus(batch) }}
+              </ion-label>
+
+            </ion-chip>
+
+          </div>
+
+          <div class="batch-details">
+
+            <p>
+              <strong>Category:</strong>
+              {{ batch.category }}
+            </p>
+
+            <p>
+              <strong>SKU:</strong>
+              {{ batch.sku || 'N/A' }}
+            </p>
+
+            <p>
+              <strong>Batch Number:</strong>
+              {{ batch.batch_number }}
+            </p>
+
+            <p>
+              <strong>Quantity Received:</strong>
+              {{ batch.quantity_received }}
+            </p>
+
+            <p>
+              <strong>Quantity Remaining:</strong>
+              {{ batch.quantity_remaining }}
+            </p>
+
+            <p>
+              <strong>Date Received:</strong>
+              {{ formatDate(batch.date_received) }}
+            </p>
+
+            <p>
+              <strong>Expiration Date:</strong>
+              {{ formatDate(batch.expiration_date) }}
+            </p>
+
+            <p>
+              <strong>Received By:</strong>
+              {{ batch.received_by_name || 'N/A' }}
+            </p>
+
+          </div>
+
+        </ion-card-content>
+
+      </ion-card>
+
+    </div>
+
+    <!-- EMPTY STATE -->
+    <div
+      class="state"
+      *ngIf="
+        !loading() &&
+        !processingExpiration() &&
+        !errorMessage() &&
+        batches().length === 0
+      ">
+
+      <ion-icon name="cube-outline"></ion-icon>
+
+      <h2>No Batch Records Found</h2>
+
+      <p>
+        There are no records in this section yet.
+      </p>
+
+    </div>
+
+  </div>
+
+</ion-content>

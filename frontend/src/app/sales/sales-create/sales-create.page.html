@@ -1,0 +1,162 @@
+
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-title>Create Sale</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+  <div class="create-container">
+
+    <div class="page-header">
+      <div>
+        <h1>Create New Sale</h1>
+        <p>Select products and enter the quantity to sell.</p>
+      </div>
+
+      <ion-button fill="outline" routerLink="/sales">
+        <ion-icon slot="start" name="arrow-back-outline"></ion-icon>
+        Sales List
+      </ion-button>
+    </div>
+
+    <div class="state" *ngIf="loading()">
+      <ion-spinner name="crescent"></ion-spinner>
+      <p>Loading products...</p>
+    </div>
+
+    <div class="error-message" *ngIf="errorMessage()">
+      <ion-icon name="alert-circle-outline"></ion-icon>
+      <span>{{ errorMessage() }}</span>
+    </div>
+
+    <ng-container *ngIf="!loading()">
+
+      <ion-card class="form-card">
+        <ion-card-content>
+
+          <div class="section-header">
+            <div>
+              <h2>Sale Items</h2>
+              <p>Choose one or more inventory products.</p>
+            </div>
+
+            <ion-button
+              fill="outline"
+              [disabled]="saving() || items.length >= 50"
+              (click)="addItem()">
+              <ion-icon slot="start" name="add-outline"></ion-icon>
+              Add Product
+            </ion-button>
+          </div>
+
+          <div
+            class="item-row"
+            *ngFor="let item of items; let i = index">
+
+            <div class="item-number">Item {{ i + 1 }}</div>
+
+            <div class="item-fields">
+              <ion-select
+                label="Product"
+                labelPlacement="stacked"
+                fill="outline"
+                interface="popover"
+                placeholder="Select a product"
+                [disabled]="saving()"
+                [(ngModel)]="item.inventory_id">
+
+                <ion-select-option
+                  *ngFor="let product of availableProducts(i)"
+                  [value]="product.id">
+                  {{ product.product_name }}
+                  — {{ money(+product.price) }}
+                </ion-select-option>
+
+              </ion-select>
+
+              <ion-input
+                label="Quantity"
+                labelPlacement="stacked"
+                fill="outline"
+                type="number"
+                min="1"
+                step="1"
+                [disabled]="saving()"
+                [(ngModel)]="item.quantity">
+              </ion-input>
+
+              <ion-button
+                color="danger"
+                fill="outline"
+                [disabled]="saving() || items.length === 1"
+                (click)="removeItem(i)">
+                <ion-icon name="trash-outline"></ion-icon>
+              </ion-button>
+            </div>
+
+            <div class="item-info" *ngIf="getProduct(item.inventory_id) as product">
+              <span>SKU: {{ product.sku || 'N/A' }}</span>
+              <span>Inventory Stock: {{ product.stock_quantity }}</span>
+              <strong>Subtotal: {{ money(lineTotal(item)) }}</strong>
+            </div>
+
+          </div>
+
+        </ion-card-content>
+      </ion-card>
+
+      <ion-card class="form-card">
+        <ion-card-content>
+          <h2>Additional Information</h2>
+
+          <ion-textarea
+            label="Notes (Optional)"
+            labelPlacement="stacked"
+            fill="outline"
+            [autoGrow]="true"
+            maxlength="200"
+            placeholder="Enter notes about this sale"
+            [disabled]="saving()"
+            [(ngModel)]="notes">
+          </ion-textarea>
+
+          <p class="payment-note">
+            Payment Status: Unpaid.
+            Payment can be recorded separately later.
+          </p>
+        </ion-card-content>
+      </ion-card>
+
+      <ion-card class="total-card">
+        <ion-card-content>
+          <div class="total-row">
+            <span>Total Amount</span>
+            <strong>{{ money(total) }}</strong>
+          </div>
+
+          <ion-button
+            expand="block"
+            [disabled]="saving() || products().length === 0"
+            (click)="saveSale()">
+
+            <ion-spinner
+              *ngIf="saving()"
+              name="crescent">
+            </ion-spinner>
+
+            <ion-icon
+              *ngIf="!saving()"
+              slot="start"
+              name="save-outline">
+            </ion-icon>
+
+            {{ saving() ? 'Saving Sale...' : 'Create Sale' }}
+          </ion-button>
+        </ion-card-content>
+      </ion-card>
+
+    </ng-container>
+
+  </div>
+</ion-content>

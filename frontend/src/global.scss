@@ -1,0 +1,285 @@
+
+/*
+ * OPTIMUM VISION OPTICAL CLINIC
+ * Global Design System
+ */
+
+/* Ionic Core CSS */
+@import "@ionic/angular/css/core.css";
+@import "@ionic/angular/css/normalize.css";
+@import "@ionic/angular/css/structure.css";
+@import "@ionic/angular/css/typography.css";
+@import "@ionic/angular/css/display.css";
+
+/* Ionic Utilities */
+@import "@ionic/angular/css/padding.css";
+@import "@ionic/angular/css/float-elements.css";
+@import "@ionic/angular/css/text-alignment.css";
+@import "@ionic/angular/css/text-transformation.css";
+@import "@ionic/angular/css/flex-utils.css";
+
+/* =========================================
+   LEAFLET MAP CSS - CLINIC LOCATION
+========================================= */
+
+@import "leaflet/dist/leaflet.css";
+
+/*
+ * Dark mode is intentionally disabled for now
+ * to keep the clinic interface consistent.
+ */
+
+/* =========================================
+   GLOBAL DESIGN TOKENS
+========================================= */
+
+:root {
+  --ov-navy: #102b46;
+  --ov-navy-light: #193d5b;
+  --ov-teal: #008f9c;
+  --ov-teal-dark: #007782;
+  --ov-teal-soft: #e7f5f5;
+
+  --ov-background: #f2f6fa;
+  --ov-surface: #ffffff;
+  --ov-border: #dfe8ef;
+
+  --ov-text: #102b46;
+  --ov-muted: #64748b;
+
+  --ov-success: #16a34a;
+  --ov-warning: #d97706;
+  --ov-danger: #dc2626;
+
+  --ov-radius-sm: 8px;
+  --ov-radius-md: 12px;
+  --ov-radius-lg: 16px;
+
+  --ov-shadow:
+    0 4px 18px rgba(16, 43, 70, 0.05);
+}
+
+/* =========================================
+   GLOBAL BASE
+========================================= */
+
+html,
+body {
+  font-family:
+    "Inter",
+    "Roboto",
+    Arial,
+    sans-serif;
+
+  background: var(--ov-background);
+  color: var(--ov-text);
+}
+
+body {
+  margin: 0;
+}
+
+ion-app {
+  background: var(--ov-background);
+  color: var(--ov-text);
+}
+
+ion-content {
+  --background: var(--ov-background);
+  --color: var(--ov-text);
+}
+
+ion-title {
+  font-weight: 700;
+}
+
+/* =========================================
+   IONIC TOOLBAR
+========================================= */
+
+ion-toolbar {
+  --background: var(--ov-navy);
+  --color: #ffffff;
+  --border-color: transparent;
+}
+
+ion-toolbar ion-title {
+  font-weight: 700;
+  letter-spacing: 0.1px;
+}
+
+/* Preserve custom dashboard toolbar */
+ion-toolbar.dashboard-toolbar {
+  --background: #ffffff;
+  --color: var(--ov-navy);
+  --border-color: var(--ov-border);
+}
+
+/* =========================================
+   BUTTONS
+========================================= */
+
+ion-button {
+  --border-radius: 9px;
+  --box-shadow: none;
+
+  font-weight: 600;
+  letter-spacing: 0;
+  text-transform: none;
+}
+
+ion-button:not([fill="outline"]):not([fill="clear"]) {
+  --background: var(--ov-teal);
+  --background-hover: var(--ov-teal-dark);
+}
+
+ion-button[fill="outline"] {
+  --color: var(--ov-teal);
+  --border-color: var(--ov-teal);
+}
+
+ion-button[fill="clear"] {
+  --color: var(--ov-teal);
+}
+
+/* =========================================
+   CARDS
+========================================= */
+
+ion-card {
+  --background: var(--ov-surface);
+  color: var(--ov-text);
+
+  border: 1px solid var(--ov-border);
+  border-radius: var(--ov-radius-lg);
+
+  box-shadow: var(--ov-shadow);
+}
+
+ion-card-title {
+  color: var(--ov-text);
+  font-weight: 700;
+}
+
+ion-card-subtitle {
+  color: var(--ov-muted);
+}
+
+/* =========================================
+   FORM ELEMENTS
+========================================= */
+
+ion-input,
+ion-textarea,
+ion-select,
+ion-searchbar {
+  --color: var(--ov-text);
+}
+
+ion-item {
+  --background: #ffffff;
+  --color: var(--ov-text);
+  --border-color: var(--ov-border);
+}
+
+ion-label {
+  color: var(--ov-text);
+}
+
+/* =========================================
+   BADGES
+========================================= */
+
+ion-badge {
+  border-radius: 999px;
+  padding: 6px 10px;
+  font-weight: 600;
+}
+
+/* =========================================
+   SEGMENTS
+========================================= */
+
+ion-segment {
+  --background: #eaf1f6;
+}
+
+ion-segment-button {
+  --color: var(--ov-muted);
+  --color-checked: var(--ov-teal);
+  --indicator-color: var(--ov-teal-soft);
+  text-transform: none;
+}
+
+/* =========================================
+   SHARED OPTIONAL CLASSES
+========================================= */
+
+.ov-page-container {
+  width: 100%;
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 24px;
+}
+
+.ov-page-title {
+  margin: 0;
+  font-size: 26px;
+  font-weight: 800;
+  color: var(--ov-navy);
+}
+
+.ov-page-subtitle {
+  margin-top: 7px;
+  font-size: 14px;
+  color: var(--ov-muted);
+}
+
+.ov-card {
+  background: #ffffff;
+  border: 1px solid var(--ov-border);
+  border-radius: var(--ov-radius-lg);
+  box-shadow: var(--ov-shadow);
+  padding: 22px;
+}
+
+.ov-section-title {
+  margin: 0 0 16px;
+  color: var(--ov-navy);
+  font-size: 19px;
+  font-weight: 700;
+}
+
+.ov-muted {
+  color: var(--ov-muted);
+}
+
+.ov-text-success {
+  color: var(--ov-success);
+}
+
+.ov-text-danger {
+  color: var(--ov-danger);
+}
+
+.ov-text-warning {
+  color: var(--ov-warning);
+}
+
+/* =========================================
+   RESPONSIVE
+========================================= */
+
+@media (max-width: 768px) {
+  .ov-page-container {
+    padding: 16px;
+  }
+
+  .ov-page-title {
+    font-size: 22px;
+  }
+
+  .ov-card {
+    padding: 16px;
+  }
+}

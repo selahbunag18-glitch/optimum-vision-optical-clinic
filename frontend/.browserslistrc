@@ -1,0 +1,20 @@
+
+# Browser compatibility configuration
+# Optimum Vision Optical Clinic
+#
+# This file defines the browsers supported
+# by the Angular/Ionic application.
+#
+# Documentation:
+# https://github.com/browserslist/browserslist#queries
+# https://angular.dev/reference/versions
+#
+# Check selected browsers using:
+# npx browserslist
+
+last 2 Chrome major versions
+last 2 Edge major versions
+last 2 Firefox major versions
+last 2 Safari major versions
+last 2 iOS major versions
+not dead

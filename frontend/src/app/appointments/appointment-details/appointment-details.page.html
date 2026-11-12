@@ -1,0 +1,269 @@
+<ion-header class="ion-no-border">
+  <ion-toolbar class="app-toolbar">
+    <ion-buttons slot="start">
+      <ion-button
+        class="back-btn"
+        routerLink="/appointments"
+        routerDirection="back"
+        aria-label="Back to appointments"
+      >
+        <ion-icon
+          slot="icon-only"
+          name="arrow-back-outline"
+        ></ion-icon>
+      </ion-button>
+    </ion-buttons>
+
+    <ion-title>Appointment Details</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <div class="page-container">
+
+    <!-- Page Heading -->
+    <section class="page-heading">
+      <div class="heading-icon">
+        <ion-icon name="calendar-outline"></ion-icon>
+      </div>
+
+      <div>
+        <h1>Appointment Details</h1>
+        <p>
+          View appointment information and manage staff notes.
+        </p>
+      </div>
+    </section>
+
+    <!-- Error Message -->
+    @if (error()) {
+      <div class="error-banner" role="alert">
+        <ion-icon name="alert-circle-outline"></ion-icon>
+        <span>{{ error() }}</span>
+      </div>
+    }
+
+    <!-- Loading State -->
+    @if (loading()) {
+
+      <div class="loading-state">
+        <ion-spinner name="crescent"></ion-spinner>
+        <p>Loading appointment details...</p>
+      </div>
+
+    } @else if (appointment(); as current) {
+
+      <!-- Appointment Overview -->
+      <section class="details-card">
+
+        <div class="card-heading">
+          <div>
+            <h2>Appointment Information</h2>
+            <p>Schedule and appointment status</p>
+          </div>
+
+          <span
+            class="status-badge"
+            [ngClass]="statusClass(current.status)"
+          >
+            {{ current.status }}
+          </span>
+        </div>
+
+        <div class="details-list">
+
+          <div class="detail-row">
+            <div class="detail-label">
+              <ion-icon name="calendar-outline"></ion-icon>
+              <span>Appointment Date</span>
+            </div>
+
+            <strong>
+              {{ formatDate(current.slot.slot_date) }}
+            </strong>
+          </div>
+
+          <div class="detail-row">
+            <div class="detail-label">
+              <ion-icon name="time-outline"></ion-icon>
+              <span>Appointment Time</span>
+            </div>
+
+            <strong>
+              {{
+                current.slot.slot_time_label ||
+                current.slot.slot_time
+              }}
+            </strong>
+          </div>
+
+          <div class="detail-row">
+            <div class="detail-label">
+              <ion-icon name="checkmark-circle-outline"></ion-icon>
+              <span>Status</span>
+            </div>
+
+            <strong>{{ current.status }}</strong>
+          </div>
+
+          <div class="detail-row">
+            <div class="detail-label">
+              <ion-icon name="document-text-outline"></ion-icon>
+              <span>Reason for Visit</span>
+            </div>
+
+            <strong>
+              {{ current.reason || 'Not specified' }}
+            </strong>
+          </div>
+
+          <div class="detail-row">
+            <div class="detail-label">
+              <ion-icon name="calendar-outline"></ion-icon>
+              <span>Date Booked</span>
+            </div>
+
+            <strong>
+              {{ current.created_at | date:'medium' }}
+            </strong>
+          </div>
+
+        </div>
+      </section>
+
+      <!-- Patient Information -->
+      <section class="details-card">
+
+        <div class="card-heading">
+          <div>
+            <h2>Patient Information</h2>
+            <p>Patient contact details</p>
+          </div>
+        </div>
+
+        <div class="details-list">
+
+          <div class="detail-row">
+            <div class="detail-label">
+              <ion-icon name="person-outline"></ion-icon>
+              <span>Full Name</span>
+            </div>
+
+            <strong>
+              {{ current.patient?.full_name || 'N/A' }}
+            </strong>
+          </div>
+
+          <div class="detail-row">
+            <div class="detail-label">
+              <ion-icon name="mail-outline"></ion-icon>
+              <span>Email Address</span>
+            </div>
+
+            <strong>
+              {{ current.patient?.email || 'N/A' }}
+            </strong>
+          </div>
+
+          <div class="detail-row">
+            <div class="detail-label">
+              <ion-icon name="call-outline"></ion-icon>
+              <span>Phone Number</span>
+            </div>
+
+            <strong>
+              {{ current.patient?.phone || 'Not provided' }}
+            </strong>
+          </div>
+
+        </div>
+      </section>
+
+      <!-- Staff Notes -->
+      <section class="details-card">
+
+        <div class="card-heading">
+          <div>
+            <h2>Staff Notes</h2>
+            <p>
+              Add or update notes related to this appointment.
+            </p>
+          </div>
+
+          <div class="notes-icon">
+            <ion-icon name="document-text-outline"></ion-icon>
+          </div>
+        </div>
+
+        <div class="notes-form">
+
+          <ion-textarea
+            label="Appointment Notes"
+            labelPlacement="stacked"
+            fill="outline"
+            placeholder="Enter staff notes here..."
+            [value]="staffNotes()"
+            (ionInput)="onNotesChange($event.detail.value)"
+            [autoGrow]="true"
+            [rows]="5"
+            [maxlength]="notesMaxLength"
+            [counter]="true"
+            [disabled]="saving()"
+          ></ion-textarea>
+
+          <p class="field-hint">
+            These notes are intended for clinic staff.
+            Save your changes to update the appointment record.
+          </p>
+
+          <div class="notes-actions">
+            <ion-button
+              [disabled]="!hasChanges || saving()"
+              (click)="saveNotes()"
+            >
+              @if (saving()) {
+                <ion-spinner
+                  slot="start"
+                  name="crescent"
+                ></ion-spinner>
+                Saving Notes...
+              } @else {
+                <ion-icon
+                  slot="start"
+                  name="save-outline"
+                ></ion-icon>
+                Save Notes
+              }
+            </ion-button>
+          </div>
+
+        </div>
+      </section>
+
+
+    } @else {
+
+      <!-- Not Found -->
+      <div class="empty-state">
+        <ion-icon name="alert-circle-outline"></ion-icon>
+
+        <h3>Appointment Not Available</h3>
+
+        <p>
+          The appointment could not be loaded.
+          Please try again or return to the appointment list.
+        </p>
+
+        <ion-button
+          fill="outline"
+          routerLink="/appointments"
+          routerDirection="back"
+        >
+          Back to Appointments
+        </ion-button>
+      </div>
+
+    }
+
+  </div>
+</ion-content>

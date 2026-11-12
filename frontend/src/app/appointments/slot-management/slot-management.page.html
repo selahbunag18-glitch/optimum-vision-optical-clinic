@@ -1,0 +1,394 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-button
+        routerLink="/home"
+        routerDirection="back"
+        aria-label="Back to dashboard">
+        <ion-icon
+          slot="icon-only"
+          name="arrow-back-outline">
+        </ion-icon>
+      </ion-button>
+    </ion-buttons>
+
+    <ion-title>Appointment Slot Management</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+  <div class="slot-container">
+
+    <!-- PAGE HEADING -->
+    <div class="page-heading">
+      <div>
+        <h1>Appointment Slots</h1>
+        <p>
+          Manage clinic appointment schedules and availability.
+        </p>
+      </div>
+
+      <div class="heading-actions">
+        <ion-button
+          [disabled]="saving()"
+          (click)="openCreateForm()">
+
+          <ion-icon
+            name="add-outline"
+            slot="start">
+          </ion-icon>
+
+          Add Slot
+        </ion-button>
+      </div>
+    </div>
+
+    <!-- SUMMARY CARDS -->
+    <div class="summary-grid">
+
+      <div class="summary-card">
+        <span>Total Slots</span>
+        <strong>{{ totalSlots() }}</strong>
+      </div>
+
+      <div class="summary-card available">
+        <span>Available</span>
+        <strong>{{ availableCount() }}</strong>
+      </div>
+
+      <div class="summary-card booked">
+        <span>Booked</span>
+        <strong>{{ bookedCount() }}</strong>
+      </div>
+
+      <div class="summary-card disabled">
+        <span>Disabled</span>
+        <strong>{{ disabledCount() }}</strong>
+      </div>
+
+    </div>
+
+    <!-- FILTERS -->
+    <ion-card>
+      <ion-card-header>
+        <ion-card-title>
+          Filter Slots
+        </ion-card-title>
+      </ion-card-header>
+
+      <ion-card-content>
+        <div class="filter-grid">
+
+          <ion-input
+            type="date"
+            label="Date From"
+            labelPlacement="stacked"
+            fill="outline"
+            [value]="dateFrom()"
+            (ionInput)="updateDateFrom($event.detail.value)">
+          </ion-input>
+
+          <ion-input
+            type="date"
+            label="Date To"
+            labelPlacement="stacked"
+            fill="outline"
+            [value]="dateTo()"
+            (ionInput)="updateDateTo($event.detail.value)">
+          </ion-input>
+
+          <ion-select
+            label="Status"
+            labelPlacement="stacked"
+            fill="outline"
+            [value]="statusFilter()"
+            (ionChange)="updateStatusFilter($event.detail.value)">
+
+            <ion-select-option value="all">
+              All Status
+            </ion-select-option>
+
+            <ion-select-option value="available">
+              Available
+            </ion-select-option>
+
+            <ion-select-option value="booked">
+              Booked
+            </ion-select-option>
+
+            <ion-select-option value="disabled">
+              Disabled
+            </ion-select-option>
+
+          </ion-select>
+
+          <ion-button
+            expand="block"
+            [disabled]="loading()"
+            (click)="loadSlots()">
+            Apply Filter
+          </ion-button>
+
+        </div>
+      </ion-card-content>
+    </ion-card>
+
+    <!-- CREATE / EDIT FORM -->
+    <!-- #slotForm is used for automatic scrolling -->
+    <ion-card
+      *ngIf="showForm()"
+      #slotForm
+      class="form-card">
+
+      <ion-card-header>
+        <ion-card-title>
+          {{
+            editingId() === null
+              ? 'Create New Slot'
+              : 'Edit Appointment Slot'
+          }}
+        </ion-card-title>
+      </ion-card-header>
+
+      <ion-card-content>
+
+        <div class="form-grid">
+
+          <ion-input
+            type="date"
+            label="Slot Date"
+            labelPlacement="stacked"
+            fill="outline"
+            [value]="formDate()"
+            (ionInput)="updateFormDate($event.detail.value)">
+          </ion-input>
+
+          <ion-input
+            type="time"
+            label="Slot Time"
+            labelPlacement="stacked"
+            fill="outline"
+            [value]="formTime()"
+            (ionInput)="updateFormTime($event.detail.value)">
+          </ion-input>
+
+        </div>
+
+        <ion-item lines="none">
+          <ion-label>
+            Available for Booking
+          </ion-label>
+
+          <ion-toggle
+            slot="end"
+            [checked]="formAvailable()"
+            (ionChange)="updateFormAvailable($event.detail.checked)">
+          </ion-toggle>
+        </ion-item>
+
+        <div class="form-actions">
+
+          <ion-button
+            fill="outline"
+            [disabled]="saving()"
+            (click)="closeForm()">
+            Cancel
+          </ion-button>
+
+          <ion-button
+            [disabled]="saving()"
+            (click)="saveSlot()">
+
+            <ion-spinner
+              *ngIf="saving()"
+              name="crescent">
+            </ion-spinner>
+
+            <span *ngIf="!saving()">
+              {{
+                editingId() === null
+                  ? 'Create Slot'
+                  : 'Save Changes'
+              }}
+            </span>
+
+          </ion-button>
+
+        </div>
+
+      </ion-card-content>
+    </ion-card>
+
+    <!-- ERROR MESSAGE -->
+    <div
+      class="error-message"
+      *ngIf="error()">
+      {{ error() }}
+    </div>
+
+    <!-- LOADING STATE -->
+    <div
+      class="loading-state"
+      *ngIf="loading()">
+
+      <ion-spinner name="crescent"></ion-spinner>
+
+      <p>Loading appointment slots...</p>
+
+    </div>
+
+    <!-- SLOT LIST -->
+    <ion-card *ngIf="!loading()">
+
+      <ion-card-header>
+        <ion-card-title>
+          Appointment Schedule
+          ({{ filteredSlots().length }})
+        </ion-card-title>
+      </ion-card-header>
+
+      <ion-card-content>
+
+        <!-- EMPTY STATE -->
+        <div
+          class="empty-state"
+          *ngIf="filteredSlots().length === 0">
+
+          <ion-icon name="calendar-outline"></ion-icon>
+
+          <h3>No appointment slots found</h3>
+
+          <p>
+            Try another date range or create a new slot.
+          </p>
+
+        </div>
+
+        <!-- SLOT ROWS -->
+        <div
+          class="slot-row"
+          *ngFor="
+            let slot of filteredSlots();
+            trackBy: trackSlot
+          ">
+
+          <!-- SLOT INFORMATION -->
+          <div class="slot-info">
+
+            <strong>
+              {{ slot.slot_date }}
+            </strong>
+
+            <span>
+              {{ slot.slot_time_label }}
+            </span>
+
+            <small *ngIf="slot.is_past">
+              Past schedule — editing unavailable
+            </small>
+
+            <small *ngIf="slot.appointment_id">
+              Appointment #{{ slot.appointment_id }}
+            </small>
+
+          </div>
+
+          <!-- SLOT STATUS -->
+          <div class="slot-status">
+
+            <ion-badge
+              [color]="
+                slot.status === 'available'
+                  ? 'success'
+                  : slot.status === 'booked'
+                    ? 'warning'
+                    : 'medium'
+              ">
+
+              {{ slot.status | titlecase }}
+
+            </ion-badge>
+
+          </div>
+
+          <!-- SLOT ACTIONS -->
+          <div class="slot-actions">
+
+            <!-- EDIT BUTTON -->
+            <ion-button
+              size="small"
+              fill="outline"
+              [disabled]="
+                slot.is_past ||
+                slot.status === 'booked' ||
+                saving()
+              "
+              [title]="
+                slot.is_past
+                  ? 'Past appointment slots cannot be edited.'
+                  : slot.status === 'booked'
+                    ? 'Booked appointment slots cannot be edited.'
+                    : 'Edit appointment slot'
+              "
+              (click)="openEditForm(slot)">
+
+              <ion-icon
+                name="create-outline"
+                slot="start">
+              </ion-icon>
+
+              Edit
+
+            </ion-button>
+
+            <!-- ENABLE / DISABLE BUTTON -->
+            <ion-button
+              size="small"
+              fill="outline"
+              [color]="
+                slot.is_available
+                  ? 'danger'
+                  : 'success'
+              "
+              [disabled]="
+                slot.is_past ||
+                slot.status === 'booked' ||
+                saving()
+              "
+              [title]="
+                slot.is_past
+                  ? 'Past appointment slots cannot be changed.'
+                  : slot.status === 'booked'
+                    ? 'Booked slots cannot be disabled.'
+                    : slot.is_available
+                      ? 'Disable this appointment slot'
+                      : 'Enable this appointment slot'
+              "
+              (click)="toggleAvailability(slot)">
+
+              <ion-icon
+                [name]="
+                  slot.is_available
+                    ? 'close-circle-outline'
+                    : 'checkmark-circle-outline'
+                "
+                slot="start">
+              </ion-icon>
+
+              {{
+                slot.is_available
+                  ? 'Disable'
+                  : 'Enable'
+              }}
+
+            </ion-button>
+
+          </div>
+
+        </div>
+
+      </ion-card-content>
+    </ion-card>
+
+  </div>
+</ion-content>

@@ -1,0 +1,243 @@
+
+:host {
+  display: block;
+}
+
+.slot-container {
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding-bottom: 32px;
+}
+
+.page-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  flex-wrap: wrap;
+  margin-bottom: 24px;
+
+  h1 {
+    font-size: 26px;
+    font-weight: 700;
+    margin: 0 0 8px;
+  }
+
+  p {
+    margin: 0;
+    color: var(--ion-color-medium);
+    font-size: 14px;
+  }
+}
+
+.heading-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.summary-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+.summary-card {
+  padding: 20px;
+  border: 1px solid var(--ion-color-light-shade);
+  border-radius: 12px;
+  background: var(--ion-card-background, var(--ion-background-color));
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+
+  span {
+    color: var(--ion-color-medium);
+    font-size: 13px;
+  }
+
+  strong {
+    font-size: 30px;
+    font-weight: 700;
+  }
+
+  &.available strong {
+    color: var(--ion-color-success);
+  }
+
+  &.booked strong {
+    color: var(--ion-color-warning);
+  }
+
+  &.disabled strong {
+    color: var(--ion-color-medium);
+  }
+}
+
+ion-card {
+  margin: 0 0 20px;
+  border-radius: 12px;
+}
+
+.filter-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr)) auto;
+  align-items: end;
+  gap: 12px;
+
+  ion-button {
+    margin: 0;
+    min-height: 48px;
+  }
+}
+
+.form-card {
+  border: 1px solid var(--ion-color-primary);
+}
+
+.form-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+  margin-bottom: 16px;
+}
+
+.form-actions {
+  display: flex;
+  justify-content: flex-end;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 20px;
+}
+
+.slot-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 110px auto;
+  align-items: center;
+  gap: 16px;
+  padding: 18px 4px;
+  border-bottom: 1px solid var(--ion-color-light-shade);
+
+  &:last-child {
+    border-bottom: none;
+  }
+}
+
+.slot-info {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+
+  strong {
+    font-size: 15px;
+  }
+
+  span {
+    font-size: 14px;
+    color: var(--ion-color-medium);
+  }
+
+  small {
+    font-size: 12px;
+    color: var(--ion-color-medium);
+  }
+}
+
+.slot-status {
+  display: flex;
+  justify-content: flex-start;
+}
+
+.slot-actions {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.loading-state,
+.empty-state {
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  justify-content: center;
+  text-align: center;
+  padding: 40px 16px;
+  color: var(--ion-color-medium);
+}
+
+.empty-state {
+  ion-icon {
+    font-size: 42px;
+    margin-bottom: 12px;
+  }
+
+  h3 {
+    font-size: 17px;
+    margin: 0 0 8px;
+  }
+
+  p {
+    font-size: 13px;
+    margin: 0;
+  }
+}
+
+.error-message {
+  color: var(--ion-color-danger);
+  background: rgba(var(--ion-color-danger-rgb), 0.08);
+  border-radius: 8px;
+  padding: 14px;
+  margin-bottom: 16px;
+  font-size: 14px;
+}
+
+@media (max-width: 900px) {
+  .summary-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .filter-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .slot-row {
+    grid-template-columns: minmax(0, 1fr) auto;
+  }
+
+  .slot-actions {
+    grid-column: 1 / -1;
+  }
+}
+
+@media (max-width: 540px) {
+  .page-heading h1 {
+    font-size: 22px;
+  }
+
+  .summary-grid {
+    gap: 10px;
+  }
+
+  .summary-card {
+    padding: 14px;
+
+    strong {
+      font-size: 24px;
+    }
+  }
+
+  .filter-grid,
+  .form-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .slot-row {
+    gap: 10px;
+  }
+
+  .slot-actions ion-button {
+    flex: 1;
+  }
+}

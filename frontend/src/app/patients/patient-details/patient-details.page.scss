@@ -1,0 +1,250 @@
+
+$navy: #0a2540;
+$teal: #0b8f94;
+$teal-dark: #087277;
+$muted: #64748b;
+$border: #e3ecf0;
+$danger: #c0392b;
+
+.bar {
+  --background: #{$navy};
+  --color: #ffffff;
+}
+
+.page-content {
+  --background: #f3f8f9;
+}
+
+.wrap {
+  max-width: 850px;
+  margin: 0 auto;
+  padding: 20px 16px 40px;
+}
+
+.profile-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  padding: 30px 20px;
+  margin-bottom: 20px;
+  background: #ffffff;
+  border-radius: 20px;
+  box-shadow: 0 6px 20px rgba(10, 37, 64, 0.06);
+  animation: fade-up 0.4s ease-out;
+
+  h1 {
+    margin: 14px 0 5px;
+    color: $navy;
+    font-size: 1.5rem;
+    font-weight: 700;
+  }
+}
+
+.avatar {
+  width: 80px;
+  height: 80px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  background: #e6f6f6;
+  color: $teal-dark;
+  font-size: 2rem;
+  font-weight: 700;
+}
+
+.patient-id {
+  margin: 0 0 14px;
+  color: $muted;
+  font-size: 0.9rem;
+}
+
+.status {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 7px 14px;
+  border-radius: 30px;
+  background: #e8f8ee;
+  color: #16803c;
+  font-size: 0.8rem;
+  font-weight: 600;
+
+  ion-icon {
+    font-size: 17px;
+  }
+
+  &.inactive {
+    background: #fdeceb;
+    color: $danger;
+  }
+}
+
+.info-card {
+  padding: 22px;
+  margin-bottom: 18px;
+  border-radius: 18px;
+  background: #ffffff;
+  box-shadow: 0 5px 18px rgba(10, 37, 64, 0.06);
+  animation: fade-up 0.45s ease-out;
+}
+
+.section-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-bottom: 14px;
+  margin-bottom: 6px;
+  border-bottom: 1px solid $border;
+
+  h2 {
+    margin: 0;
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: $navy;
+  }
+
+  ion-icon {
+    color: $teal;
+    font-size: 22px;
+  }
+}
+
+.info-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  padding: 14px 0;
+
+  &:not(:last-child) {
+    border-bottom: 1px solid #f0f4f6;
+  }
+
+  > div:last-child {
+    flex: 1;
+    min-width: 0;
+  }
+
+  p {
+    margin: 4px 0 0;
+    color: $navy;
+    font-size: 0.95rem;
+    font-weight: 500;
+    overflow-wrap: anywhere;
+  }
+}
+
+.info-icon {
+  flex: none;
+  width: 40px;
+  height: 40px;
+  display: grid;
+  place-items: center;
+  border-radius: 12px;
+  background: #e6f6f6;
+  color: $teal;
+
+  ion-icon {
+    font-size: 20px;
+  }
+}
+
+.label {
+  font-size: 0.8rem;
+  color: $muted;
+}
+
+.actions {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 22px;
+
+  ion-button {
+    --background: #{$teal};
+    --background-hover: #{$teal-dark};
+    --border-radius: 12px;
+    --color: #ffffff;
+    min-height: 46px;
+    font-weight: 600;
+  }
+
+  ion-button[fill="outline"] {
+    --background: transparent;
+    --color: #{$teal-dark};
+    --border-color: #{$teal};
+  }
+}
+
+.state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 300px;
+  padding: 40px 20px;
+  text-align: center;
+  color: $muted;
+
+  > ion-icon {
+    font-size: 52px;
+    color: $teal;
+  }
+
+  ion-spinner {
+    color: $teal;
+  }
+
+  h2 {
+    margin: 12px 0 6px;
+    color: $navy;
+    font-size: 1.2rem;
+  }
+
+  p {
+    max-width: 320px;
+    line-height: 1.5;
+  }
+
+  ion-button {
+    --background: #{$teal};
+    --border-radius: 10px;
+  }
+}
+
+.state-error > ion-icon {
+  color: $danger;
+}
+
+@keyframes fade-up {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (min-width: 768px) {
+  .wrap {
+    padding: 30px 24px 50px;
+  }
+
+  .profile-card {
+    padding: 36px;
+  }
+
+  .info-card {
+    padding: 28px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .profile-card,
+  .info-card {
+    animation: none;
+  }
+}

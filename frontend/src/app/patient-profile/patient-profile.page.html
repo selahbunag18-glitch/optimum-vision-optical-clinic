@@ -1,0 +1,384 @@
+
+<ion-header class="ion-no-border">
+  <ion-toolbar class="profile-toolbar">
+
+    <ion-buttons slot="start">
+      <ion-button routerLink="/patient">
+        <ion-icon slot="start" name="arrow-back-outline"></ion-icon>
+        Dashboard
+      </ion-button>
+    </ion-buttons>
+
+    <ion-title>My Profile</ion-title>
+
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="profile-content">
+
+  @if (loading()) {
+
+    <div class="loading">
+      <ion-spinner name="crescent"></ion-spinner>
+      <p>Loading profile...</p>
+    </div>
+
+  } @else if (user(); as currentUser) {
+
+    <main class="profile-container">
+
+      <!-- PROFILE BANNER -->
+
+      <section class="profile-banner">
+
+        <div class="profile-avatar">
+          <ion-icon name="person-circle-outline"></ion-icon>
+        </div>
+
+        <h1>{{ currentUser.full_name }}</h1>
+        <p>{{ currentUser.email }}</p>
+
+        <span class="patient-badge">
+          Patient Account
+        </span>
+
+      </section>
+
+      <!-- SUCCESS MESSAGE -->
+
+      @if (profileSuccess()) {
+        <div class="password-message success-message">
+          <ion-icon name="checkmark-circle-outline"></ion-icon>
+          <p>{{ profileSuccess() }}</p>
+        </div>
+      }
+
+      <!-- PERSONAL INFORMATION -->
+
+      <section class="profile-card">
+
+        <div class="card-heading">
+
+          <div>
+            <h2>Personal Information</h2>
+            <p>Your registered account details</p>
+          </div>
+
+          @if (!editing()) {
+            <ion-button
+              class="edit-button"
+              (click)="editProfile()">
+
+              <ion-icon slot="start" name="create-outline"></ion-icon>
+              Edit Profile
+
+            </ion-button>
+          }
+
+        </div>
+
+        @if (!editing()) {
+
+          <div class="information-row">
+            <div class="information-icon">
+              <ion-icon name="person-circle-outline"></ion-icon>
+            </div>
+
+            <div>
+              <span>Full Name</span>
+              <strong>{{ currentUser.full_name }}</strong>
+            </div>
+          </div>
+
+          <div class="information-row">
+            <div class="information-icon">
+              <ion-icon name="mail-outline"></ion-icon>
+            </div>
+
+            <div>
+              <span>Email Address</span>
+              <strong>{{ currentUser.email }}</strong>
+            </div>
+          </div>
+
+          <div class="information-row">
+            <div class="information-icon">
+              <ion-icon name="call-outline"></ion-icon>
+            </div>
+
+            <div>
+              <span>Phone Number</span>
+              <strong>{{ phone }}</strong>
+            </div>
+          </div>
+
+          <div class="information-row">
+            <div class="information-icon">
+              <ion-icon name="shield-checkmark-outline"></ion-icon>
+            </div>
+
+            <div>
+              <span>Account Type</span>
+              <strong>Patient</strong>
+            </div>
+          </div>
+
+        } @else {
+
+          <!-- EDIT PROFILE FORM -->
+
+          <form
+            class="profile-form"
+            [formGroup]="profileForm"
+            (ngSubmit)="saveProfile()"
+            novalidate>
+
+            <h3>Edit Personal Information</h3>
+
+            <p class="form-description">
+              Update your registered patient information.
+            </p>
+
+            @if (profileError()) {
+              <div class="password-message error-message">
+                <ion-icon name="alert-circle-outline"></ion-icon>
+                <p>{{ profileError() }}</p>
+              </div>
+            }
+
+            <div class="password-field">
+              <label for="profile-name">Full Name</label>
+
+              <input
+                id="profile-name"
+                type="text"
+                formControlName="full_name"
+                placeholder="Enter your full name" />
+
+              @if (profileForm.controls.full_name.touched &&
+                   profileForm.controls.full_name.invalid) {
+                <small class="field-error">
+                  Name must contain 2 to 100 characters.
+                </small>
+              }
+            </div>
+
+            <div class="password-field">
+              <label for="profile-email">Email Address</label>
+
+              <input
+                id="profile-email"
+                type="email"
+                formControlName="email"
+                placeholder="Enter your email address" />
+
+              @if (profileForm.controls.email.touched &&
+                   profileForm.controls.email.invalid) {
+                <small class="field-error">
+                  Please enter a valid email address.
+                </small>
+              }
+            </div>
+
+            <div class="password-field">
+              <label for="profile-phone">Phone Number</label>
+
+              <input
+                id="profile-phone"
+                type="tel"
+                formControlName="phone"
+                placeholder="Enter your phone number" />
+
+              @if (profileForm.controls.phone.touched &&
+                   profileForm.controls.phone.invalid) {
+                <small class="field-error">
+                  Please enter a valid phone number.
+                </small>
+              }
+            </div>
+
+            <div class="password-actions">
+
+              <ion-button
+                type="button"
+                fill="outline"
+                [disabled]="savingProfile()"
+                (click)="cancelEditProfile()">
+                Cancel
+              </ion-button>
+
+              <ion-button
+                type="submit"
+                [disabled]="savingProfile()">
+
+                @if (savingProfile()) {
+                  <ion-spinner name="crescent"></ion-spinner>
+                } @else {
+                  Save Changes
+                }
+
+              </ion-button>
+
+            </div>
+
+          </form>
+
+        }
+
+      </section>
+
+      <!-- ACCOUNT SECURITY -->
+
+      <section class="profile-card security-card">
+
+        <div class="card-heading">
+
+          <div>
+            <h2>
+              <ion-icon name="lock-closed-outline"></ion-icon>
+              Account Security
+            </h2>
+
+            <p>Manage your account password</p>
+          </div>
+
+        </div>
+
+        @if (passwordSuccess()) {
+          <div class="password-message success-message">
+            <ion-icon name="checkmark-circle-outline"></ion-icon>
+            <p>{{ passwordSuccess() }}</p>
+          </div>
+        }
+
+        @if (!changingPassword()) {
+
+          <div class="security-action">
+
+            <div>
+              <h3>Change Password</h3>
+
+              <p>
+                Update your password to keep
+                your patient account secure.
+              </p>
+            </div>
+
+            <ion-button (click)="openChangePassword()">
+              Change Password
+            </ion-button>
+
+          </div>
+
+        } @else {
+
+          <!-- CHANGE PASSWORD FORM -->
+
+          <form
+            class="password-form"
+            [formGroup]="passwordForm"
+            (ngSubmit)="savePassword()"
+            novalidate>
+
+            <h3>Change Your Password</h3>
+
+            <p class="password-description">
+              Enter your current password and choose a new password.
+            </p>
+
+            @if (passwordError()) {
+              <div class="password-message error-message">
+                <ion-icon name="alert-circle-outline"></ion-icon>
+                <p>{{ passwordError() }}</p>
+              </div>
+            }
+
+            <div class="password-field">
+
+              <label for="current-password">
+                Current Password
+              </label>
+
+              <input
+                id="current-password"
+                type="password"
+                formControlName="current_password"
+                autocomplete="current-password"
+                placeholder="Enter current password" />
+
+            </div>
+
+            <div class="password-field">
+
+              <label for="new-password">
+                New Password
+              </label>
+
+              <input
+                id="new-password"
+                type="password"
+                formControlName="new_password"
+                autocomplete="new-password"
+                placeholder="Enter new password" />
+
+              <small>
+                Minimum 8 characters, at least one letter
+                and one number. Maximum 72 bytes.
+              </small>
+
+            </div>
+
+            <div class="password-field">
+
+              <label for="confirm-password">
+                Confirm New Password
+              </label>
+
+              <input
+                id="confirm-password"
+                type="password"
+                formControlName="confirm_password"
+                autocomplete="new-password"
+                placeholder="Confirm your new password" />
+
+            </div>
+
+            <div class="password-actions">
+
+              <ion-button
+                type="button"
+                fill="outline"
+                [disabled]="savingPassword()"
+                (click)="cancelChangePassword()">
+                Cancel
+              </ion-button>
+
+              <ion-button
+                type="submit"
+                [disabled]="savingPassword()">
+
+                @if (savingPassword()) {
+                  <ion-spinner name="crescent"></ion-spinner>
+                } @else {
+                  Save New Password
+                }
+
+              </ion-button>
+
+            </div>
+
+          </form>
+
+        }
+
+      </section>
+
+      <footer>
+        Optimum Vision Optical Clinic
+      </footer>
+
+    </main>
+
+  }
+
+</ion-content>

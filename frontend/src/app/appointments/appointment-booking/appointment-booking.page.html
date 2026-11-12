@@ -1,0 +1,462 @@
+
+<ion-header class="ion-no-border">
+  <ion-toolbar class="bar">
+    <ion-buttons slot="start">
+      <ion-button
+        routerLink="/patient"
+        aria-label="Back to patient dashboard"
+      >
+        <ion-icon
+          slot="icon-only"
+          name="arrow-back-outline"
+        ></ion-icon>
+      </ion-button>
+    </ion-buttons>
+
+    <ion-title>Book Appointment</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="page-content">
+  <div class="wrap">
+
+    <!-- Booking Success -->
+    @if (success()) {
+
+      <section class="success-card">
+        <div class="success-icon">
+          <ion-icon
+            name="checkmark-circle-outline"
+          ></ion-icon>
+        </div>
+
+        <h1>Appointment Booked Successfully!</h1>
+
+        <p>
+          Your appointment request has been submitted
+          to Optimum Vision Optical Clinic.
+        </p>
+
+        @if (bookedAppointment(); as appointment) {
+
+          <div class="booking-summary">
+            <h2>Appointment Information</h2>
+
+            <div class="summary-row">
+              <span>Appointment ID</span>
+              <strong>#{{ appointment.id }}</strong>
+            </div>
+
+            <div class="summary-row">
+              <span>Date</span>
+              <strong>
+                {{ formatDate(appointment.slot.slot_date) }}
+              </strong>
+            </div>
+
+            <div class="summary-row">
+              <span>Time</span>
+              <strong>
+                {{
+                  appointment.slot.slot_time_label ||
+                  appointment.slot.slot_time
+                }}
+              </strong>
+            </div>
+
+            <div class="summary-row">
+              <span>Status</span>
+              <strong>{{ appointment.status }}</strong>
+            </div>
+
+            <div class="summary-row">
+              <span>Reason for Visit</span>
+              <strong>
+                {{ appointment.reason || 'Not specified' }}
+              </strong>
+            </div>
+          </div>
+
+          @if (appointment.status === 'Pending') {
+            <div class="pending-notice">
+              <ion-icon
+                name="time-outline"
+              ></ion-icon>
+
+              <p>
+                Your appointment is pending confirmation.
+                Please wait for the clinic staff to review
+                your booking request.
+              </p>
+            </div>
+          }
+        }
+
+        <div class="success-actions">
+          <ion-button
+            expand="block"
+            (click)="bookAnother()"
+          >
+            <ion-icon
+              slot="start"
+              name="calendar-outline"
+            ></ion-icon>
+            Book Another Appointment
+          </ion-button>
+
+          <ion-button
+            expand="block"
+            fill="outline"
+            (click)="goToDashboard()"
+          >
+            Back to Patient Dashboard
+          </ion-button>
+        </div>
+      </section>
+
+    } @else {
+
+      <!-- Page Heading -->
+      <section class="page-heading">
+        <div class="heading-icon">
+          <ion-icon name="calendar-outline"></ion-icon>
+        </div>
+
+        <div>
+          <h1>Book an Appointment</h1>
+          <p>
+            Select an available date and time
+            for your visit to our optical clinic.
+          </p>
+        </div>
+      </section>
+
+      <!-- API Error -->
+      @if (error()) {
+        <div class="error-banner" role="alert">
+          <ion-icon
+            name="alert-circle-outline"
+          ></ion-icon>
+          <span>{{ error() }}</span>
+        </div>
+      }
+
+      <!-- Available Dates -->
+      <section class="booking-card">
+
+        <div class="section-heading">
+          <div class="section-icon">
+            <ion-icon name="calendar-outline"></ion-icon>
+          </div>
+
+          <div>
+            <h2>1. Select Appointment Date</h2>
+            <p>
+              Choose from the available booking dates.
+            </p>
+          </div>
+        </div>
+
+        @if (loadingDates()) {
+
+          <div class="loading-state">
+            <ion-spinner name="crescent"></ion-spinner>
+            <p>Loading available dates...</p>
+          </div>
+
+        } @else if (availableDates().length === 0) {
+
+          <div class="empty-state">
+            <ion-icon name="calendar-outline"></ion-icon>
+
+            <h3>No Available Dates</h3>
+
+            <p>
+              There are currently no available appointment
+              dates. Please check again later.
+            </p>
+
+            <ion-button
+              fill="outline"
+              (click)="loadAvailableDates()"
+            >
+              <ion-icon
+                slot="start"
+                name="refresh-outline"
+              ></ion-icon>
+              Refresh Dates
+            </ion-button>
+          </div>
+
+        } @else {
+
+          <div class="date-grid">
+
+            @for (date of availableDates(); track date.date) {
+
+              <button
+                type="button"
+                class="date-option"
+                [class.selected]="selectedDate() === date.date"
+                [disabled]="booking() || loadingSlots()"
+                [attr.aria-pressed]="selectedDate() === date.date"
+                (click)="selectDate(date.date)"
+              >
+                <strong>
+                  {{ formatDate(date.date) }}
+                </strong>
+
+                <span>
+                  {{ date.available_slots }}
+                  available slot(s)
+                </span>
+              </button>
+
+            }
+
+          </div>
+        }
+
+      </section>
+
+      <!-- Available Time Slots -->
+      <section class="booking-card">
+
+        <div class="section-heading">
+          <div class="section-icon">
+            <ion-icon name="time-outline"></ion-icon>
+          </div>
+
+          <div>
+            <h2>2. Select Appointment Time</h2>
+            <p>
+              Choose your preferred available time slot.
+            </p>
+          </div>
+        </div>
+
+        @if (!selectedDate()) {
+
+          <div class="empty-state">
+            <ion-icon name="time-outline"></ion-icon>
+
+            <h3>Select a Date First</h3>
+
+            <p>
+              Please select an appointment date
+              to view available time slots.
+            </p>
+          </div>
+
+        } @else if (loadingSlots()) {
+
+          <div class="loading-state">
+            <ion-spinner name="crescent"></ion-spinner>
+            <p>Loading available time slots...</p>
+          </div>
+
+        } @else if (availableSlots().length === 0) {
+
+          <div class="empty-state">
+            <ion-icon name="time-outline"></ion-icon>
+
+            <h3>No Available Time Slots</h3>
+
+            <p>
+              No available time slots were found
+              for the selected date.
+            </p>
+
+            <ion-button
+              fill="outline"
+              (click)="refreshSlots(selectedDate())"
+            >
+              <ion-icon
+                slot="start"
+                name="refresh-outline"
+              ></ion-icon>
+              Refresh Slots
+            </ion-button>
+          </div>
+
+        } @else {
+
+          <p class="selected-date-label">
+            Available times for
+            <strong>{{ formatDate(selectedDate()) }}</strong>
+          </p>
+
+          <div class="time-grid">
+
+            @for (slot of availableSlots(); track slot.id) {
+
+              <button
+                type="button"
+                class="time-option"
+                [class.selected]="selectedSlotId() === slot.id"
+                [disabled]="booking() || !slot.is_available"
+                [attr.aria-pressed]="selectedSlotId() === slot.id"
+                (click)="selectSlot(slot.id)"
+              >
+                <ion-icon name="time-outline"></ion-icon>
+
+                <span>
+                  {{ slot.slot_time_label || slot.slot_time }}
+                </span>
+
+                @if (selectedSlotId() === slot.id) {
+                  <ion-icon
+                    name="checkmark-circle-outline"
+                  ></ion-icon>
+                }
+              </button>
+
+            }
+
+          </div>
+        }
+
+      </section>
+
+      <!-- Reason for Visit -->
+      <section class="booking-card">
+
+        <div class="section-heading">
+          <div class="section-icon">
+            <ion-icon name="calendar-outline"></ion-icon>
+          </div>
+
+          <div>
+            <h2>3. Reason for Visit</h2>
+            <p>
+              Tell us why you want to visit the clinic.
+            </p>
+          </div>
+        </div>
+
+        <div class="form-field">
+          <ion-textarea
+            label="Reason for Appointment *"
+            labelPlacement="stacked"
+            fill="outline"
+            placeholder="Example: Eye check-up, consultation, or new eyeglasses"
+            [value]="reason()"
+            (ionInput)="onReasonChange($event.detail.value)"
+            [autoGrow]="true"
+            [rows]="4"
+            [maxlength]="500"
+          ></ion-textarea>
+
+          <small class="field-hint">
+            Please provide a short reason for your visit.
+          </small>
+        </div>
+
+      </section>
+
+      <!-- Booking Summary -->
+      <section class="booking-card">
+
+        <div class="section-heading">
+          <div class="section-icon">
+            <ion-icon name="checkmark-circle-outline"></ion-icon>
+          </div>
+
+          <div>
+            <h2>4. Review Your Appointment</h2>
+            <p>
+              Check your selected schedule before booking.
+            </p>
+          </div>
+        </div>
+
+        <div class="booking-summary">
+
+          <div class="summary-row">
+            <span>Appointment Date</span>
+            <strong>
+              {{
+                selectedDate()
+                  ? formatDate(selectedDate())
+                  : 'Not selected'
+              }}
+            </strong>
+          </div>
+
+          <div class="summary-row">
+            <span>Appointment Time</span>
+
+            <strong>
+              @if (selectedSlotId(); as slotId) {
+                @for (slot of availableSlots(); track slot.id) {
+                  @if (slot.id === slotId) {
+                    {{ slot.slot_time_label || slot.slot_time }}
+                  }
+                }
+              } @else {
+                Not selected
+              }
+            </strong>
+          </div>
+
+          <div class="summary-row">
+            <span>Reason for Visit</span>
+            <strong>
+              {{ reason().trim() || 'Not provided' }}
+            </strong>
+          </div>
+
+        </div>
+
+        <div class="booking-notice">
+          <ion-icon name="alert-circle-outline"></ion-icon>
+
+          <p>
+            Your appointment request will be reviewed
+            by the clinic staff. Please wait for
+            confirmation before visiting the clinic.
+          </p>
+        </div>
+
+      </section>
+
+      <!-- Booking Actions -->
+      <div class="booking-actions">
+
+        <ion-button
+          expand="block"
+          [disabled]="!canBook"
+          (click)="bookAppointment()"
+        >
+          @if (booking()) {
+            <ion-spinner
+              slot="start"
+              name="crescent"
+            ></ion-spinner>
+
+            Booking Appointment...
+          } @else {
+            <ion-icon
+              slot="start"
+              name="save-outline"
+            ></ion-icon>
+
+            Confirm Appointment Booking
+          }
+        </ion-button>
+
+        <ion-button
+          expand="block"
+          fill="outline"
+          routerLink="/patient"
+          [disabled]="booking()"
+        >
+          Cancel
+        </ion-button>
+
+      </div>
+
+    }
+
+  </div>
+</ion-content>
